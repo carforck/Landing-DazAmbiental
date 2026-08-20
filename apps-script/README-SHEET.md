@@ -41,13 +41,13 @@ https://docs.google.com/spreadsheets/d/ESTO_ES_EL_SHEET_ID/edit
 El ID del script, que aparece en esa misma pantalla de configuración,
 identifica el proyecto de Apps Script y aquí no sirve.
 
-**Por qué hace falta.** Si el script se creó desde el propio Sheet
+**Por qué el `SHEET_ID`.** Si el script se creó desde el propio Sheet
 (Extensiones → Apps Script) queda vinculado a él y funcionaría sin esto. Pero si
 se creó suelto desde script.google.com, `getActiveSpreadsheet()` devuelve nada y
 todo falla con el primer participante real. Con `SHEET_ID` funciona en los dos
 casos.
 
-**Por qué hace falta.** La aplicación web tiene que quedar abierta a cualquiera
+**Por qué el `TOKEN`.** La aplicación web tiene que quedar abierta a cualquiera
 para que el servidor de la landing pueda escribir. Sin la clave, cualquier
 persona que descubra la URL podría insertar filas falsas en la hoja del cliente.
 
