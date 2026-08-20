@@ -86,6 +86,28 @@ export async function POST(request: Request) {
       );
     }
 
+    /*
+      Apps Script responde 200 aunque rechace el envío: si solo miráramos el
+      código HTTP, un token mal configurado se vería como éxito y los
+      resultados del cliente desaparecerían sin que nadie se entere.
+    */
+    const cuerpo = await respuesta.text();
+    let confirmacion: { ok?: boolean; motivo?: string } = {};
+    try {
+      confirmacion = JSON.parse(cuerpo);
+    } catch {
+      console.error("[enviar] el webhook no devolvió JSON:", cuerpo.slice(0, 200));
+      return NextResponse.json({ ok: false, motivo: "webhook-sin-json" }, { status: 502 });
+    }
+
+    if (!confirmacion.ok) {
+      console.error("[enviar] el webhook rechazó la fila:", confirmacion.motivo);
+      return NextResponse.json(
+        { ok: false, motivo: confirmacion.motivo ?? "webhook-rechazo" },
+        { status: 502 },
+      );
+    }
+
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ ok: false, motivo: "webhook-inalcanzable" }, { status: 502 });
