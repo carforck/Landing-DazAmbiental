@@ -13,8 +13,32 @@
  * Instalación paso a paso en README-SHEET.md
  */
 
-/** Nombre de la hoja donde se acumulan los resultados. */
+/** Nombre de la pestaña donde se acumulan los resultados. */
 const HOJA = "Resultados";
+
+/**
+ * Devuelve el libro donde escribir.
+ *
+ * Si el script se creó desde el propio Sheet (Extensiones → Apps Script) queda
+ * vinculado a él y `getActiveSpreadsheet()` lo devuelve. Si se creó suelto desde
+ * script.google.com, ese método devuelve null y todo falla en el primer envío.
+ *
+ * Para cubrir los dos casos: si existe la propiedad SHEET_ID, se abre por id.
+ * El id es lo que va entre /d/ y /edit en la URL del Sheet.
+ */
+function libro() {
+  const id = PropertiesService.getScriptProperties().getProperty("SHEET_ID");
+  if (id) return SpreadsheetApp.openById(id);
+
+  const activo = SpreadsheetApp.getActiveSpreadsheet();
+  if (!activo) {
+    throw new Error(
+      "El script no está vinculado a ningún Sheet. Agrega la propiedad SHEET_ID " +
+        "con el id del documento, o crea el script desde Extensiones → Apps Script.",
+    );
+  }
+  return activo;
+}
 
 /**
  * Clave compartida. La aplicación web tiene que quedar abierta a cualquiera
@@ -57,14 +81,28 @@ function doPost(e) {
   }
 }
 
-/** Permite comprobar desde el navegador que la publicación quedó bien. */
+/**
+ * Comprobación desde el navegador. Además de confirmar que la publicación
+ * quedó bien, verifica que el script alcanza el Sheet: es el fallo que de otro
+ * modo solo aparecería con el primer participante real.
+ */
 function doGet() {
-  return respuesta({ ok: true, servicio: "Misión Mapache", estado: "escuchando" });
+  try {
+    const nombre = libro().getName();
+    return respuesta({
+      ok: true,
+      servicio: "Misión Mapache",
+      estado: "escuchando",
+      documento: nombre,
+    });
+  } catch (error) {
+    return respuesta({ ok: false, motivo: String(error) });
+  }
 }
 
 function escribirFila(datos) {
-  const libro = SpreadsheetApp.getActiveSpreadsheet();
-  const hoja = libro.getSheetByName(HOJA) || libro.insertSheet(HOJA);
+  const doc = libro();
+  const hoja = doc.getSheetByName(HOJA) || doc.insertSheet(HOJA);
 
   const claves = Object.keys(datos);
 

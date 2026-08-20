@@ -18,18 +18,34 @@ Se abre un editor con un archivo `Código.gs` que trae una función vacía.
 Borra todo lo que haya en `Código.gs` y pega el contenido de
 [`Codigo.gs`](./Codigo.gs). Guarda con `Cmd+S`.
 
-## 3. Poner la clave compartida
+## 3. Poner las propiedades del script
 
 En el editor: **⚙ Configuración del proyecto → Propiedades del script →
-Agregar propiedad**.
+Agregar propiedad**. Son dos:
 
 | Propiedad | Valor |
 |---|---|
 | `TOKEN` | una cadena larga y aleatoria |
+| `SHEET_ID` | el id del documento |
 
-Para generarla: `openssl rand -hex 24`
+Para generar el token: `openssl rand -hex 24`. Guarda ese valor: va también en
+Vercel, en el paso 6.
 
-Guarda ese valor: va también en Vercel, en el paso 6.
+**El `SHEET_ID` no es el ID del script.** Es lo que va entre `/d/` y `/edit` en
+la URL del Sheet:
+
+```
+https://docs.google.com/spreadsheets/d/ESTO_ES_EL_SHEET_ID/edit
+```
+
+El ID del script, que aparece en esa misma pantalla de configuración,
+identifica el proyecto de Apps Script y aquí no sirve.
+
+**Por qué hace falta.** Si el script se creó desde el propio Sheet
+(Extensiones → Apps Script) queda vinculado a él y funcionaría sin esto. Pero si
+se creó suelto desde script.google.com, `getActiveSpreadsheet()` devuelve nada y
+todo falla con el primer participante real. Con `SHEET_ID` funciona en los dos
+casos.
 
 **Por qué hace falta.** La aplicación web tiene que quedar abierta a cualquiera
 para que el servidor de la landing pueda escribir. Sin la clave, cualquier
@@ -55,11 +71,15 @@ cualquier script no publicado en Marketplace.
 Al terminar aparece una **URL de la aplicación web** que termina en `/exec`.
 Esa es la que necesito.
 
-Para comprobar que quedó bien, ábrela en el navegador: debe responder
+Para comprobar que quedó bien, ábrela en el navegador: debe responder con el
+nombre real de tu documento.
 
 ```json
-{"ok":true,"servicio":"Misión Mapache","estado":"escuchando"}
+{"ok":true,"servicio":"Misión Mapache","estado":"escuchando","documento":"REGISTROS"}
 ```
+
+Si en vez de eso responde `{"ok":false,...}`, el mensaje dice qué falta: casi
+siempre es el `SHEET_ID`.
 
 ## 6. Configurar Vercel
 
@@ -94,6 +114,7 @@ guardadas.
 - **Abre la URL `/exec` en el navegador.** Si no responde el JSON de arriba, la
   publicación quedó mal: repite el paso 4 creando una implementación nueva.
 - **Revisa que el token coincida** entre la propiedad del script y Vercel.
+- **Confirma que `SHEET_ID` es el del documento**, no el del proyecto de script.
 - **Confirma que se volvió a desplegar** después de agregar las variables.
 - En el editor de Apps Script, **Ejecuciones** muestra cada llamada recibida y
   el error si lo hubo.
