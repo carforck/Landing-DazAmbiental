@@ -1,26 +1,76 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+  Paleta tomada del logo real de DAZ Ambiental (LOGO/…_sinfondo-01.png):
+  verde oliva oscuro de las letras + dorado del engranaje. Nada inventado.
+*/
+@theme {
+  --color-selva-950: #131a08;
+  --color-selva-900: #1d2710;
+  --color-selva-800: #252f14;
+  --color-selva-700: #313d1a;
+  --color-selva-600: #48522c;
+  --color-selva-500: #505a33;
+  --color-selva-400: #6d7a4a;
+  --color-selva-300: #93a06d;
+
+  --color-oro-600: #a8842f;
+  --color-oro-500: #bf9c41;
+  --color-oro-400: #c7a848;
+  --color-oro-300: #dcc47e;
+  --color-oro-100: #f3e9cd;
+
+  --color-crema: #faf7ee;
+  --color-crema-200: #efe8d6;
+
+  --font-display: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-work-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-selva-950);
+  color: var(--color-crema);
+  font-family: var(--font-sans);
+}
+
+/* Foco visible y consistente para navegación por teclado */
+:focus-visible {
+  outline: 3px solid var(--color-oro-400);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Textura de follaje: dos capas de puntos suaves, sin imágenes externas */
+.bg-follaje {
+  background-image:
+    radial-gradient(circle at 20% 30%, rgb(147 160 109 / 0.09) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 70% 65%, rgb(191 156 65 / 0.07) 0 1.5px, transparent 2px);
+  background-size: 90px 90px, 130px 130px;
+}
+
+/* Sendero punteado que une las estaciones del mapa */
+.sendero {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--color-oro-500) 0 10px,
+    transparent 10px 22px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

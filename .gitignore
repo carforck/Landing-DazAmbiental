@@ -32,6 +32,12 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# .env.example sí se versiona: documenta la variable que hay que configurar
+!.env.example
+
+# skills de diseño instaladas localmente (impeccable, ui-ux-pro-max): 8 MB de
+# herramienta, no de proyecto. Se reinstalan con los comandos de CONTEXTO.md
+/.claude/
 
 # vercel
 .vercel

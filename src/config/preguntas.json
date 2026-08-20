@@ -1,0 +1,219 @@
+{
+  "version": "2.0",
+  "fuente": "preguntas mapache.docx — 19/08/2026 (en revisión por el cliente)",
+  "puntuacion": {
+    "puntosPorAcierto": 1,
+    "maximo": 15,
+    "nota": "El cliente pidió que la letra correcta quede repartida entre A, B, C y D. No barajar las opciones en runtime sin preservar esa distribución."
+  },
+  "categorias": [
+    { "id": "avistamientos", "nombre": "Avistamientos y Modo Paparazzi", "icono": "camera", "preguntas": [1, 2, 3] },
+    { "id": "alimentacion", "nombre": "Buffet no autorizado", "icono": "utensils", "preguntas": [4, 5, 6] },
+    { "id": "encuentros", "nombre": "Reacciones y encuentros cercanos", "icono": "footprints", "preguntas": [7, 8, 9] },
+    { "id": "residuos", "nombre": "Manejo de residuos", "icono": "trash-2", "preguntas": [10, 11] },
+    { "id": "emergencias", "nombre": "Emergencias y mitos", "icono": "heart-pulse", "preguntas": [12, 13, 14, 15] }
+  ],
+  "niveles": [
+    { "min": 13, "max": 15, "nombre": "Guardián de la Fauna", "porcentaje": "86% – 100%", "interpretacion": "Población educada y apta como multiplicadora del mensaje ambiental.", "mensaje": "Sabes convivir y además puedes enseñarlo. Eres quien marca la pauta en el equipo." },
+    { "min": 9, "max": 12, "nombre": "Aliado en Proceso", "porcentaje": "60% – 80%", "interpretacion": "Requiere refuerzos puntuales en temas específicos (p. ej., fotos/flash o residuos).", "mensaje": "Vas por buen camino. Un par de hábitos por afinar y quedas listo." },
+    { "min": 5, "max": 8, "nombre": "Observador Imprudente", "porcentaje": "33% – 53%", "interpretacion": "Alto riesgo de habituación animal por humanización y búsqueda de interacción.", "mensaje": "Tu intención es buena, pero algunas acciones acercan demasiado al mapache a lo humano." },
+    { "min": 0, "max": 4, "nombre": "Agente de Riesgo", "porcentaje": "0% – 26%", "interpretacion": "Requiere intervención directa, control normativo y talleres para mitigar fobias/agresión.", "mensaje": "Hay mucho por descubrir. Esta es justo la conversación que vale la pena tener." }
+  ],
+  "preguntas": [
+    {
+      "numero": 1,
+      "categoria": "avistamientos",
+      "titulo": "El selfie con el visitante estrella",
+      "escenario": "Vas caminando por un sendero al atardecer y te topas cara a cara con un mapache parado en dos patas sobre una cerca. ¡Se ve increíblemente tierno! ¿Qué haces?",
+      "opciones": {
+        "A": "Me acerco despacito, extiendo la mano como para acariciarlo y me tomo una selfie abrazándolo.",
+        "B": "Activo el flash de la cámara para que salga bien iluminado, ¡es casi de noche!",
+        "C": "Le tomo una foto o video desde una distancia segura (mínimo 3–4 metros), disfrutando el momento sin acercarme.",
+        "D": "Me asusto, salgo corriendo y grito para alertar a todos los que están cerca."
+      },
+      "correcta": "C"
+    },
+    {
+      "numero": 2,
+      "categoria": "avistamientos",
+      "titulo": "El mapache modelo en la piscina",
+      "escenario": "Estás en la zona de descanso y un mapache decide pasearse entre las sillas buscando curiosidades. Los demás huéspedes empiezan a aglomerarse. ¿Cuál es tu reacción?",
+      "opciones": {
+        "A": "Corro a ponerme en primera fila, llamándolo con chasquidos y aplausos para que mire a mi cámara.",
+        "B": "Le tiro una chancleta o un objeto pequeño para que se asuste y no se acerque a mis cosas.",
+        "C": "Busco algo de comer en mi bolso para atraerlo hacia mí y que la gente lo vea mejor.",
+        "D": "Mantengo mi distancia, informo discretamente al personal o equipo ambiental y pido a los demás que le den espacio para que se retire solo."
+      },
+      "correcta": "D"
+    },
+    {
+      "numero": 3,
+      "categoria": "avistamientos",
+      "titulo": "¡Flash por todas partes!",
+      "escenario": "Es de noche y un mapache subió a un árbol cercano. Varias personas comienzan a tomarle fotos con luces intensas y flashes directos a los ojos. ¿Qué haces?",
+      "opciones": {
+        "A": "Apago mi flash y les sugiero amablemente a las demás personas que hagan lo mismo, explicándoles que la luz enceguece y estresa a los animales nocturnos.",
+        "B": "Me sumo a la fiesta de fotos; entre más luz le pongamos, mejor sale la foto para redes.",
+        "C": "Le enciendo la linterna de máxima potencia del celular en la cara para ver si es un mapache o una zarigüeya.",
+        "D": "Ignoro la situación y me voy; al fin y al cabo, es solo una foto."
+      },
+      "correcta": "A"
+    },
+    {
+      "numero": 4,
+      "categoria": "alimentacion",
+      "titulo": "La tentación del snack",
+      "escenario": "Un mapache con cara de \"no he comido en días\" se acerca a tu mesa en el restaurante al aire libre y te mira fijamente a los ojos. Tienes un pedazo de fruta en la mano. ¿Qué haces?",
+      "opciones": {
+        "A": "Se lo doy en la boca, ¡imposible decirle que no a esa carita!",
+        "B": "Guardo o protejo mi comida, no le ofrezco nada y me aseguro de que no haya restos a su alcance.",
+        "C": "Le tiro un pedacito de pan al suelo lejos de mí para que se distraiga y me deje comer en paz.",
+        "D": "Dejo la mesa sola con los platos llenos para ir a buscar al personal."
+      },
+      "correcta": "B"
+    },
+    {
+      "numero": 5,
+      "categoria": "alimentacion",
+      "titulo": "El botín de la terraza",
+      "escenario": "Dejaste una bandeja con frutas o snacks sobre la mesa del balcón de tu habitación o casa y entraste un momento. Al regresar, encuentras al mapache disfrutando de tu banquete. ¿Qué haces?",
+      "opciones": {
+        "A": "Intento quitarle la comida de las manos inmediatamente; ¡esa comida era mía!",
+        "B": "Le tomo video mientras se come todo y le sirvo un vaso de agua para que no se atragante.",
+        "C": "Hago un ruido firme a distancia (como una palmada) o cierro la puerta para que se retire solo, y luego limpio todo sin dejar más comida afuera.",
+        "D": "Le lanzo un objeto pesado para castigarlo por \"ladrón\"."
+      },
+      "correcta": "C"
+    },
+    {
+      "numero": 6,
+      "categoria": "alimentacion",
+      "titulo": "La teoría del \"alimento natural\"",
+      "escenario": "Escuchas a otra persona decir: \"No pasa nada si le damos guineo o maní, al fin y al cabo la fruta es natural y les hace bien\". ¿Qué opinas o haces?",
+      "opciones": {
+        "A": "Le doy la razón y comparto de mi fruta, pensando que es un acto de amor hacia la naturaleza.",
+        "B": "Me mantengo en silencio, pero aprovecho para darle galletas, ya que no son frutas.",
+        "C": "Le digo que mejor le dé restos de carne o comida sazonada para que quede más lleno.",
+        "D": "Aclaro respetuosamente que la comida humana altera su dieta natural, los vuelve dependientes y genera conflictos por agresividad."
+      },
+      "correcta": "D"
+    },
+    {
+      "numero": 7,
+      "categoria": "encuentros",
+      "titulo": "Encuentro de pasillo",
+      "escenario": "Sales de tu habitación o casa por la noche y justo en el umbral hay un mapache oliendo el suelo. Te frena el paso y queda a menos de un metro de ti. ¿Cómo actúas?",
+      "opciones": {
+        "A": "Doy un paso atrás despacio, abro espacio para que el animal tenga una ruta de escape libre y espero a que se mueva tranquilamente.",
+        "B": "Intento darle un empujón con el pie para que se quite rápido del camino.",
+        "C": "Me quedo congelado(a) y empiezo a gritar a todo volumen solicitando auxilio.",
+        "D": "Me agacho a nivel de sus ojos para intentar acariciarle la cabeza."
+      },
+      "correcta": "A"
+    },
+    {
+      "numero": 8,
+      "categoria": "encuentros",
+      "titulo": "El lenguaje corporal de advertencia",
+      "escenario": "Te acercaste demasiado a una hembra mapache con sus crías o a un adulto acorralado. El mapache empieza a gruñir, erizar su pelo y arquear la espalda. ¿Qué significa y qué haces?",
+      "opciones": {
+        "A": "Quiere jugar; me acerco más haciendo sonidos cariñosos.",
+        "B": "Está a la defensiva y siente amenaza; me retiro lentamente hacia atrás sin darle la espalda bruscamente ni hacer movimientos agresivos.",
+        "C": "Me está desafiando; me hago el fuerte, le grito y me abalanzo sobre él para demostrar dominancia.",
+        "D": "Le tiro una piedra para que entienda que el que manda soy yo."
+      },
+      "correcta": "B"
+    },
+    {
+      "numero": 9,
+      "categoria": "encuentros",
+      "titulo": "La mascota de la casa vs. el mapache",
+      "escenario": "Vas paseando con tu perro (o ves a un perro suelto) y este detecta a un mapache en el matorral. El perro empieza a ladrar e intenta abalanzarse sobre el mapache. ¿Cuál es el manejo correcto?",
+      "opciones": {
+        "A": "Dejo que el perro lo persiga; es el instinto natural de los animales arreglárselas entre ellos.",
+        "B": "Animo al perro para que asuste al mapache y así no vuelva más por aquí.",
+        "C": "Aseguro o corto la correa de mi perro inmediatamente, lo retiro de la zona y evito cualquier mordedura o transmisión de enfermedades entre especies.",
+        "D": "Intento agarrar al mapache con las manos desnudas para salvarlo del perro."
+      },
+      "correcta": "C"
+    },
+    {
+      "numero": 10,
+      "categoria": "residuos",
+      "titulo": "La caneca rebelde",
+      "escenario": "Vas a arrojar un empaque de comida en una caneca de basura en zona abierta, pero ves que la tapa está zafada o llena hasta el borde. Hay un mapache cerca observando. ¿Qué haces?",
+      "opciones": {
+        "A": "Dejo la bolsa o el empaque encima o al lado de la caneca; alguien pasará a recogerlo después.",
+        "B": "Tiro la basura cerca al mapache para facilitarle la búsqueda de comida.",
+        "C": "Empujo la basura con fuerza sobre la caneca rebosada aunque no cierre, total \"ya está llena\".",
+        "D": "Busco una caneca con tapa hermética o anti-fauna que esté cerrada correctamente, o guardo el residuo hasta encontrar un contenedor seguro."
+      },
+      "correcta": "D"
+    },
+    {
+      "numero": 11,
+      "categoria": "residuos",
+      "titulo": "Limpieza de puestos de trabajo y mesas",
+      "escenario": "Termina el turno de servicio o la cena familiar y quedan sobrantes de comida en mesas o carritos de aseo al aire libre. ¿Qué procedimiento aplicas?",
+      "opciones": {
+        "A": "Retiro y cubro inmediatamente todos los sobrantes orgánicos hacia zonas cerradas para evitar atraer fauna silvestre.",
+        "B": "Dejo los platos con restos al aire libre; en un rato vuelvo por ellos.",
+        "C": "Separo los restos de comida y los dejo en un rincón del jardín \"para que los animalitos no pasen hambre de noche\".",
+        "D": "Boto la comida al suelo cerca a la vegetación para que se biodegrade rápido."
+      },
+      "correcta": "A"
+    },
+    {
+      "numero": 12,
+      "categoria": "emergencias",
+      "titulo": "¡Auch! Arañazo o mordedura",
+      "escenario": "Alguien intentó tocar o quitarle algo a un mapache y terminó con un rasguño o mordedura leve en la mano. ¿Cuál es el protocolo correcto?",
+      "opciones": {
+        "A": "Ponerse una curita y no decir nada para evitar contratiempos.",
+        "B": "Lavar inmediatamente con abundante agua y jabón, e ir de inmediato a revisión médica o puesto de salud e informar al área ambiental.",
+        "C": "Buscar al mapache para capturarlo y castigarlo por la agresión.",
+        "D": "Aplicar alcohol o limón en la herida y esperar a ver si evoluciona."
+      },
+      "correcta": "B"
+    },
+    {
+      "numero": 13,
+      "categoria": "emergencias",
+      "titulo": "El mapache \"enfermo o triste\"",
+      "escenario": "Encuentras a un mapache caminando muy despacio, desorientado, con aspecto lastimado o atrapado en una estructura. ¿Cómo actúas?",
+      "opciones": {
+        "A": "Lo recojo envuelto en una toalla o camiseta y me lo llevo a mi habitación o casa para cuidarlo.",
+        "B": "Le pongo un plato con leche y pan al lado a ver si reacciona.",
+        "C": "Reporto inmediatamente la ubicación exacta al equipo ambiental o brigada de fauna sin intentar manipularlo directamente.",
+        "D": "Le echo agua con una manguera para ver si se despierta y sale corriendo."
+      },
+      "correcta": "C"
+    },
+    {
+      "numero": 14,
+      "categoria": "emergencias",
+      "titulo": "Crías \"abandonadas\"",
+      "escenario": "Ves a dos crías de mapache muy pequeñas solas en la base de un árbol chillando suavemente. No ves a la madre por ningún lado. ¿Qué es lo más seguro que debes hacer?",
+      "opciones": {
+        "A": "Metérmelas en el bolsillo o bolso y llevármelas, ¡la mamá las abandonó seguro!",
+        "B": "Traerles un tetero con leche para alimentarlas mientras tanto.",
+        "C": "Acorralarlas para tomarles fotos de cerca y subirlas a redes sociales.",
+        "D": "No tocarlas, alejarme de la zona y notificar al personal ambiental: la madre suele estar buscando comida cerca y regresará si no ve humanos."
+      },
+      "correcta": "D"
+    },
+    {
+      "numero": 15,
+      "categoria": "emergencias",
+      "titulo": "La trampa del \"mapache doméstico\"",
+      "escenario": "Escuchas a un compañero de trabajo o huésped decir: \"Los mapaches de aquí son súper dóciles, parecen gatos. Me dan ganas de llevarme uno de recuerdo o tenerlo de mascota\". ¿Qué respuesta encaja con la protección de la fauna?",
+      "opciones": {
+        "A": "\"Son animales silvestres; tenerlos como mascotas es ilegal, les causa sufrimiento, altera el ecosistema y transmite enfermedades\".",
+        "B": "\"¡Claro! Si encuentras un bebé es fácil acostumbrarlo a la casa\".",
+        "C": "\"Solo si tienes un patio grande puedes tenerlo, si no no\".",
+        "D": "\"Mejor no, porque comen mucho y sale muy caro mantenerlos\"."
+      },
+      "correcta": "A"
+    }
+  ]
+}
