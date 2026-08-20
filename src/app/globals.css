@@ -5,9 +5,9 @@
   verde oliva oscuro de las letras + dorado del engranaje. Nada inventado.
 */
 @theme {
-  --color-selva-950: #131a08;
-  --color-selva-900: #1d2710;
-  --color-selva-800: #252f14;
+  --color-selva-950: #151b0d;
+  --color-selva-900: #202a15;
+  --color-selva-800: #2a3419;
   --color-selva-700: #313d1a;
   --color-selva-600: #48522c;
   --color-selva-500: #505a33;
@@ -23,8 +23,297 @@
   --color-crema: #faf7ee;
   --color-crema-200: #efe8d6;
 
-  --font-display: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-work-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-roboto-mono), ui-monospace, monospace;
+}
+
+/*
+  Titular al estilo de la referencia: peso 900, tracking negativo y interlínea
+  por debajo de 1. Sin esto Roboto se ve como Roboto de plantilla; con esto se
+  ve como un titular compuesto.
+*/
+.titular {
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 0.92;
+}
+
+/*
+  Cinta que desfila entre secciones. Reemplaza a las líneas divisorias: el
+  cambio de sección se siente por movimiento y por el canto redondeado que
+  monta una sección sobre la anterior, no por una regla de un pixel.
+
+  El contenido va duplicado en el marcado y se desplaza medio ancho, así el
+  ciclo cierra sin salto visible.
+*/
+@keyframes desfile {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.desfile {
+  animation: desfile 42s linear infinite;
+}
+
+/*
+  El punto final del titular, que se carga y revienta.
+
+  Secuencia: el núcleo late tres veces durante 2.35 s con el resplandor
+  subiendo, y en el pico salen el anillo y diez chispas repartidas cada 36°.
+  Es de una sola pasada, como el original: repetirlo en bucle lo volvería un
+  adorno y distraería de la lectura.
+
+  Todo va dentro de `no-preference` a propósito: si el sistema pide menos
+  movimiento, el núcleo se queda quieto y visible en vez de arrancar en
+  scale(0) y no aparecer nunca.
+*/
+.detonante {
+  position: relative;
+  display: inline-block;
+  width: 0.16em;
+  height: 0.16em;
+  margin-left: 0.07em;
+  vertical-align: baseline;
+}
+
+.detonante > b {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--color-oro-500);
+  box-shadow: 0 0 24px rgb(191 156 65 / 0.55);
+}
+
+.detonante .anillo {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid rgb(220 196 126 / 0.8);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.detonante .chispa {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.34em;
+  height: 0.055em;
+  margin: -0.0275em 0 0 -0.17em;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-oro-300), var(--color-oro-500));
+  opacity: 0;
+  pointer-events: none;
+  transform: rotate(var(--a)) translateX(0);
+}
+
+/*
+  La secuencia solo corre con la clase `detonar`, que se pone al entrar en
+  pantalla. Sin ella el núcleo se queda quieto y visible: el punto es parte del
+  titular y nunca debe faltar.
+*/
+@media (prefers-reduced-motion: no-preference) {
+  .detonante.detonar > b {
+    animation: nucleo 2.35s cubic-bezier(0.34, 1.4, 0.4, 1) 0.85s both;
+  }
+  .detonante.detonar .anillo {
+    animation: anillo 0.85s cubic-bezier(0.16, 0.84, 0.44, 1) 2.86s forwards;
+  }
+  .detonante.detonar .chispa {
+    animation: chispa 0.95s cubic-bezier(0.16, 0.84, 0.44, 1) 2.88s forwards;
+  }
+}
+
+@keyframes nucleo {
+  0% {
+    transform: scale(0);
+  }
+  14% {
+    transform: scale(1.35);
+  }
+  24% {
+    transform: scale(1);
+  }
+  44% {
+    transform: scale(1.22);
+    box-shadow: 0 0 34px rgb(191 156 65 / 0.75);
+  }
+  56% {
+    transform: scale(1);
+  }
+  86% {
+    transform: scale(1.45);
+    box-shadow: 0 0 60px rgb(220 196 126 / 0.95);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 26px rgb(191 156 65 / 0.55);
+  }
+}
+
+@keyframes anillo {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.4);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(3.4);
+  }
+}
+
+@keyframes chispa {
+  0% {
+    opacity: 1;
+    transform: rotate(var(--a)) translateX(0.12em) scaleX(0.4);
+  }
+  70% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--a)) translateX(1.55em) scaleX(1);
+  }
+}
+
+/*
+  Saltos de sección. A propósito son distintos entre sí: si todos fueran el
+  mismo recurso, el scroll se vuelve monótono y se nota la plantilla.
+*/
+
+/* Corte en diagonal: la sección entra con el canto superior inclinado */
+.corte-diagonal {
+  clip-path: polygon(0 3.5vw, 100% 0, 100% 100%, 0 100%);
+}
+
+/* Cursor del texto que se teclea: parpadea solo cuando ya terminó de escribir */
+.cursor {
+  color: var(--color-oro-300);
+  font-weight: 400;
+}
+
+.cursor-fin {
+  animation: parpadeo 1.05s steps(1, end) infinite;
+}
+
+@keyframes parpadeo {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/*
+  Los bloques oscuros grandes leían como una mancha plana. Dos resplandores muy
+  tenues —dorado arriba, verde medio abajo— les devuelven profundidad sin que se
+  perciba un degradado.
+*/
+.fondo-selva {
+  background-image:
+    radial-gradient(70% 55% at 15% 0%, rgb(191 156 65 / 0.09), transparent 70%),
+    radial-gradient(60% 50% at 85% 100%, rgb(109 122 74 / 0.14), transparent 70%);
+}
+
+/*
+  Fondo vivo: tres manchas de color que se desplazan muy despacio. El
+  movimiento tiene que estar por debajo del umbral de atención, si no compite
+  con el formulario que va encima.
+*/
+.fondo-vivo {
+  position: absolute;
+  inset: -25%;
+  background-image:
+    radial-gradient(38% 34% at 22% 28%, rgb(191 156 65 / 0.3), transparent 62%),
+    radial-gradient(34% 30% at 78% 22%, rgb(109 122 74 / 0.34), transparent 62%),
+    radial-gradient(42% 38% at 55% 82%, rgb(72 82 44 / 0.28), transparent 62%);
+  filter: blur(18px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fondo-vivo {
+    animation: derivar 34s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes derivar {
+  from {
+    transform: translate3d(-3%, -2%, 0) scale(1.05);
+  }
+  to {
+    transform: translate3d(3%, 2%, 0) scale(1.14);
+  }
+}
+
+/*
+  Estela del cursor: huellas de mapache.
+
+  La huella es la de verdad: cinco dedos largos, casi como dedos de mano, sobre
+  una almohadilla ancha. Por eso se lee al instante como mapache y no como
+  perro o gato.
+
+  Va como máscara y no como imagen, así el color sale del tema y cambia con la
+  paleta sin volver a exportar nada.
+*/
+.halo-cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 420px;
+  height: 420px;
+  margin: -210px 0 0 -210px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(191 156 65 / 0.07), transparent 62%);
+  will-change: transform;
+}
+
+.huella {
+  position: absolute;
+  width: 22px;
+  height: 27px;
+  margin: -13.5px 0 0 -11px;
+  background-color: var(--color-selva-700);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2050%22%3E%3Cellipse%20cx%3D%2220%22%20cy%3D%2237%22%20rx%3D%2211.5%22%20ry%3D%229.5%22%2F%3E%3Cellipse%20cx%3D%226.5%22%20cy%3D%2222%22%20rx%3D%223.1%22%20ry%3D%226.4%22%20transform%3D%22rotate%28-32%206.5%2022%29%22%2F%3E%3Cellipse%20cx%3D%2213.5%22%20cy%3D%2214%22%20rx%3D%223.1%22%20ry%3D%227.2%22%20transform%3D%22rotate%28-15%2013.5%2014%29%22%2F%3E%3Cellipse%20cx%3D%2221%22%20cy%3D%2210.5%22%20rx%3D%223.1%22%20ry%3D%227.6%22%2F%3E%3Cellipse%20cx%3D%2228.5%22%20cy%3D%2214%22%20rx%3D%223.1%22%20ry%3D%227.2%22%20transform%3D%22rotate%2815%2028.5%2014%29%22%2F%3E%3Cellipse%20cx%3D%2235%22%20cy%3D%2222%22%20rx%3D%223.1%22%20ry%3D%226.4%22%20transform%3D%22rotate%2832%2035%2022%29%22%2F%3E%3C%2Fsvg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2050%22%3E%3Cellipse%20cx%3D%2220%22%20cy%3D%2237%22%20rx%3D%2211.5%22%20ry%3D%229.5%22%2F%3E%3Cellipse%20cx%3D%226.5%22%20cy%3D%2222%22%20rx%3D%223.1%22%20ry%3D%226.4%22%20transform%3D%22rotate%28-32%206.5%2022%29%22%2F%3E%3Cellipse%20cx%3D%2213.5%22%20cy%3D%2214%22%20rx%3D%223.1%22%20ry%3D%227.2%22%20transform%3D%22rotate%28-15%2013.5%2014%29%22%2F%3E%3Cellipse%20cx%3D%2221%22%20cy%3D%2210.5%22%20rx%3D%223.1%22%20ry%3D%227.6%22%2F%3E%3Cellipse%20cx%3D%2228.5%22%20cy%3D%2214%22%20rx%3D%223.1%22%20ry%3D%227.2%22%20transform%3D%22rotate%2815%2028.5%2014%29%22%2F%3E%3Cellipse%20cx%3D%2235%22%20cy%3D%2222%22%20rx%3D%223.1%22%20ry%3D%226.4%22%20transform%3D%22rotate%2832%2035%2022%29%22%2F%3E%3C%2Fsvg%3E");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: pisada 1.9s cubic-bezier(0.22, 0.9, 0.36, 1) forwards;
+}
+
+/* Aparece marcada y se va desvaneciendo, como una pisada sobre arena */
+@keyframes pisada {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--giro)) scale(0.55);
+  }
+  12% {
+    opacity: 0.16;
+    transform: rotate(var(--giro)) scale(1);
+  }
+  55% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--giro)) scale(1.04);
+  }
+}
+
+/* Numeral hueco: da peso al índice sin tener que dibujar nada */
+.numeral-hueco {
+  -webkit-text-stroke: 1.5px var(--color-oro-500);
+  color: transparent;
 }
 
 html {

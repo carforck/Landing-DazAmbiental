@@ -3,15 +3,18 @@
 import { motion, useReducedMotion } from "framer-motion";
 
 /**
- * Mascota de Misión Mapache — cartoon 3D gris.
+ * Mascota de Misión Mapache — cartoon 3D.
  *
  * Rasgos que definen el personaje, tomados de la referencia aprobada:
- *  · banda clara bajando por el centro de la cara, entre dos parches oscuros
- *  · mechones crema saliendo de las mejillas
- *  · ojos grandes con iris azul-grisáceo, pupila amplia y doble brillo
- *  · cola gruesa de anillos claro/oscuro bien contrastados
+ *  · cara crema con el antifaz oscuro como banda ancha sobre los ojos, partida
+ *    por una cuña clara que sube hasta la frente
+ *  · orejas grandes con interior rosado y fleco de pelo crema
+ *  · ojos con iris ámbar, pupila amplia y doble brillo (el ámbar además amarra
+ *    con el dorado del logo de DAZ)
+ *  · textura de pelo a trazos en pecho y mejillas, no superficies lisas
+ *  · cola delgada de anillos, enroscada hacia arriba
  *
- * El volumen 3D se consigue con degradados radiales, oclusión difuminada en los
+ * El volumen se consigue con degradados radiales, oclusión difuminada en los
  * pliegues, luz de borde arriba y sombra de contacto en el piso. Al ser SVG
  * anima con código, pesa pocos KB y no se pixela a ningún tamaño.
  *
@@ -46,7 +49,7 @@ export function MapachePlush({
   const cola = reduce
     ? {}
     : {
-        rotate: celebra ? [0, 12, 0, -12, 0] : [0, 4, 0, -4, 0],
+        rotate: celebra ? [0, 13, 0, -13, 0] : [0, 5, 0, -5, 0],
         transition: {
           duration: celebra ? 1.1 : 4.2,
           repeat: Infinity,
@@ -72,43 +75,39 @@ export function MapachePlush({
       aria-label="Mapache, la mascota guía de la misión"
       className={className}
       animate={cuerpo}
-      style={{ originX: "140px", originY: "282px", ...style }}
+      style={{ originX: "140px", originY: "284px", ...style }}
     >
       <defs>
-        <radialGradient id="mp-cabeza" cx="0.36" cy="0.26" r="0.84">
-          <stop offset="0%" stopColor="#c4cad2" />
-          <stop offset="55%" stopColor="#949ba4" />
-          <stop offset="100%" stopColor="#5e646c" />
+        <radialGradient id="mp-cabeza" cx="0.36" cy="0.24" r="0.86">
+          <stop offset="0%" stopColor="#a79c90" />
+          <stop offset="55%" stopColor="#867b70" />
+          <stop offset="100%" stopColor="#5a5148" />
         </radialGradient>
-        <radialGradient id="mp-cuerpo" cx="0.36" cy="0.22" r="0.86">
-          <stop offset="0%" stopColor="#8d949d" />
-          <stop offset="58%" stopColor="#666d76" />
-          <stop offset="100%" stopColor="#3f454c" />
+        <radialGradient id="mp-cuerpo" cx="0.36" cy="0.2" r="0.88">
+          <stop offset="0%" stopColor="#9b9084" />
+          <stop offset="58%" stopColor="#786e63" />
+          <stop offset="100%" stopColor="#4c443c" />
         </radialGradient>
-        <radialGradient id="mp-vientre" cx="0.42" cy="0.24" r="0.8">
-          <stop offset="0%" stopColor="#f6ece2" />
-          <stop offset="100%" stopColor="#d9c7ba" />
+        <radialGradient id="mp-crema" cx="0.42" cy="0.22" r="0.82">
+          <stop offset="0%" stopColor="#faf3e9" />
+          <stop offset="100%" stopColor="#ddd1c2" />
         </radialGradient>
-        <radialGradient id="mp-banda" cx="0.45" cy="0.2" r="0.85">
-          <stop offset="0%" stopColor="#f3e9de" />
-          <stop offset="100%" stopColor="#d4c6b8" />
-        </radialGradient>
-        <linearGradient id="mp-parche" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#5b636c" />
-          <stop offset="100%" stopColor="#333940" />
+        <linearGradient id="mp-antifaz" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#6a5f55" />
+          <stop offset="100%" stopColor="#39322c" />
         </linearGradient>
-        <radialGradient id="mp-oreja" cx="0.5" cy="0.38" r="0.72">
-          <stop offset="0%" stopColor="#efd4c6" />
-          <stop offset="100%" stopColor="#c39c8c" />
+        <radialGradient id="mp-oreja" cx="0.5" cy="0.4" r="0.72">
+          <stop offset="0%" stopColor="#f6a7ad" />
+          <stop offset="100%" stopColor="#cf737d" />
         </radialGradient>
-        <radialGradient id="mp-iris" cx="0.38" cy="0.3" r="0.78">
-          <stop offset="0%" stopColor="#b9cde2" />
-          <stop offset="60%" stopColor="#7d97b5" />
-          <stop offset="100%" stopColor="#42597a" />
+        <radialGradient id="mp-iris" cx="0.36" cy="0.28" r="0.8">
+          <stop offset="0%" stopColor="#f7c463" />
+          <stop offset="45%" stopColor="#e0982c" />
+          <stop offset="100%" stopColor="#96590f" />
         </radialGradient>
         <linearGradient id="mp-colaClara" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#c3c9d1" />
-          <stop offset="100%" stopColor="#8f959e" />
+          <stop offset="0%" stopColor="#b3a89b" />
+          <stop offset="100%" stopColor="#877c71" />
         </linearGradient>
 
         <filter id="mp-suave" x="-50%" y="-50%" width="200%" height="200%">
@@ -122,148 +121,134 @@ export function MapachePlush({
       {/* Sombra de contacto */}
       <ellipse
         cx="140"
-        cy="284"
-        rx="76"
-        ry="13"
-        fill="#2a2f35"
+        cy="286"
+        rx="74"
+        ry="12"
+        fill="#2e2823"
         opacity="0.35"
         filter="url(#mp-suave)"
       />
 
-      {/* ── Cola gruesa, saliendo por detrás hacia la izquierda ── */}
-      <motion.g style={{ originX: "104px", originY: "216px" }} animate={cola}>
+      {/* ── Cola delgada, enroscada hacia arriba por el costado ── */}
+      <motion.g style={{ originX: "96px", originY: "230px" }} animate={cola}>
         <path
-          d="M104 216c-38 4-62 22-62 48 0 20 16 32 34 28"
+          d="M96 230c-32 2-52 16-56 38-3 17 8 29 24 27 13-2 20-13 17-24"
           fill="none"
           stroke="url(#mp-colaClara)"
-          strokeWidth="52"
+          strokeWidth="34"
           strokeLinecap="round"
         />
-        <path
-          d="M74 224c-14 6-24 16-28 28"
-          fill="none"
-          stroke="#3d434a"
-          strokeWidth="50"
-          strokeLinecap="round"
-        />
-        <path
-          d="M44 268c0 12 8 20 19 21"
-          fill="none"
-          stroke="#3d434a"
-          strokeWidth="46"
-          strokeLinecap="round"
-        />
-        {/* Luz de borde superior de la cola */}
-        <path
-          d="M100 194c-32 6-52 24-56 46"
-          fill="none"
-          stroke="#f2f4f7"
-          strokeWidth="6"
-          strokeLinecap="round"
-          opacity="0.25"
-        />
+        <path d="M64 240c-11 5-19 13-23 24" stroke="#3f3830" strokeWidth="33" strokeLinecap="round" fill="none" />
+        <path d="M40 278c-1 11 6 19 16 20" stroke="#3f3830" strokeWidth="30" strokeLinecap="round" fill="none" />
+        <path d="M81 268c3 9-2 17-11 19" stroke="#3f3830" strokeWidth="26" strokeLinecap="round" fill="none" />
       </motion.g>
 
-      {/* ── Piernas y pies ── */}
-      <ellipse cx="106" cy="268" rx="26" ry="17" fill="#575e66" />
-      <ellipse cx="106" cy="265" rx="18" ry="10" fill="#8d949d" opacity="0.5" />
-      <ellipse cx="174" cy="268" rx="26" ry="17" fill="#575e66" />
-      <ellipse cx="174" cy="265" rx="18" ry="10" fill="#8d949d" opacity="0.5" />
+      {/* ── Pies ── */}
+      <ellipse cx="108" cy="272" rx="25" ry="16" fill="#4f473f" />
+      <ellipse cx="172" cy="272" rx="25" ry="16" fill="#4f473f" />
+      <g stroke="#39322c" strokeWidth="2.5" strokeLinecap="round" opacity="0.7">
+        <path d="M100 268v8M108 266v10M116 268v8" />
+        <path d="M164 268v8M172 266v10M180 268v8" />
+      </g>
 
       {/* ── Cuerpo ── */}
-      <ellipse cx="140" cy="212" rx="72" ry="62" fill="url(#mp-cuerpo)" />
+      <ellipse cx="140" cy="216" rx="70" ry="60" fill="url(#mp-cuerpo)" />
       <ellipse
         cx="140"
-        cy="160"
-        rx="54"
-        ry="19"
-        fill="#2f353b"
+        cy="166"
+        rx="52"
+        ry="18"
+        fill="#2f2925"
         opacity="0.45"
         filter="url(#mp-suave)"
       />
 
-      {/* Vientre claro */}
-      <ellipse cx="140" cy="216" rx="45" ry="50" fill="url(#mp-vientre)" />
+      {/* Pecho crema con textura de pelo a trazos */}
+      <ellipse cx="140" cy="222" rx="44" ry="48" fill="url(#mp-crema)" />
+      <g stroke="#c9bcab" strokeWidth="2.5" strokeLinecap="round" opacity="0.75" fill="none">
+        <path d="M112 192q6 12 2 24M126 186q5 14 1 27M140 184q4 15 0 28M154 186q-5 14-1 27M168 192q-6 12-2 24" />
+        <path d="M108 224q7 11 3 22M140 222q3 13-1 24M172 224q-7 11-3 22" />
+      </g>
 
       {/* Bracitos al frente, sin nada en las manos: el diagnóstico enseña
-          justamente a no darles comida */}
-      <motion.g style={{ originX: "88px", originY: "192px" }} animate={brazos}>
-        <ellipse cx="86" cy="214" rx="18" ry="26" fill="#5d646c" transform="rotate(-16 86 214)" />
-        <ellipse cx="82" cy="232" rx="13" ry="10" fill="#3f454c" />
+          justamente a no darles comida ni a manipularlos */}
+      <motion.g style={{ originX: "90px", originY: "196px" }} animate={brazos}>
+        <ellipse cx="88" cy="216" rx="17" ry="25" fill="#6d6359" transform="rotate(-16 88 216)" />
+        <ellipse cx="84" cy="234" rx="12" ry="10" fill="#463f38" />
       </motion.g>
-      <motion.g style={{ originX: "192px", originY: "192px" }} animate={brazos}>
-        <ellipse cx="194" cy="214" rx="18" ry="26" fill="#5d646c" transform="rotate(16 194 214)" />
-        <ellipse cx="198" cy="232" rx="13" ry="10" fill="#3f454c" />
+      <motion.g style={{ originX: "190px", originY: "196px" }} animate={brazos}>
+        <ellipse cx="192" cy="216" rx="17" ry="25" fill="#6d6359" transform="rotate(16 192 216)" />
+        <ellipse cx="196" cy="234" rx="12" ry="10" fill="#463f38" />
       </motion.g>
 
       {/* ── Orejas grandes, altas y separadas ── */}
-      <Oreja cx={78} cy={62} rot={-14} />
-      <Oreja cx={202} cy={62} rot={14} />
+      <Oreja cx={74} cy={56} rot={-15} />
+      <Oreja cx={206} cy={56} rot={15} />
 
       {/* ── Cabeza ── */}
-      <ellipse cx="140" cy="108" rx="80" ry="74" fill="url(#mp-cabeza)" />
+      <ellipse cx="140" cy="112" rx="82" ry="74" fill="url(#mp-cabeza)" />
 
-      {/* Mechones crema saliendo de las mejillas: el rasgo que más carácter da */}
-      <Mechones lado="izq" />
-      <Mechones lado="der" />
-
-      {/* Banda clara por el centro de la cara, de la frente al hocico */}
+      {/* Cara crema: cubre mejillas, hocico y la cuña que sube a la frente */}
       <path
-        d="M120 38c-7 26-9 52-6 76h52c3-24 1-50-6-76-12-5-28-5-40 0z"
-        fill="url(#mp-banda)"
+        d="M140 44c30 0 54 14 66 36 10 19 10 42 0 60-12 22-36 36-66 36s-54-14-66-36c-10-18-10-41 0-60 12-22 36-36 66-36z"
+        fill="url(#mp-crema)"
       />
 
-      {/* Parches oscuros a cada lado de la banda */}
+      {/* Antifaz: banda ancha sobre los ojos, partida por la cuña clara */}
       <path
-        d="M112 60c-24-4-42 8-48 32-4 18 4 34 20 42 18 9 38 4 44-10 5-13 2-38-4-56-3-6-7-8-12-8z"
-        fill="url(#mp-parche)"
-      />
-      <path
-        d="M168 60c24-4 42 8 48 32 4 18-4 34-20 42-18 9-38 4-44-10-5-13-2-38 4-56 3-6 7-8 12-8z"
-        fill="url(#mp-parche)"
+        d="M60 106c1-30 24-48 52-42 13 3 21 13 24 27l4 22 4-22c3-14 11-24 24-27 28-6 51 12 52 42 1 28-20 48-48 46-16-1-27-9-32-21-5 12-16 20-32 21-28 2-49-18-48-46z"
+        fill="url(#mp-antifaz)"
       />
 
       {/* Luz de borde en la coronilla */}
       <path
-        d="M84 62c14-18 34-26 56-26s42 8 56 26"
+        d="M84 66c15-18 34-26 56-26s41 8 56 26"
         fill="none"
         stroke="#ffffff"
-        strokeWidth="9"
+        strokeWidth="8"
         strokeLinecap="round"
-        opacity="0.3"
+        opacity="0.26"
         filter="url(#mp-suavito)"
       />
+
+      {/* Mechones de pelo en las mejillas */}
+      <Mechones />
+      <Mechones espejo />
 
       {/* ── Ojos ── */}
-      <Ojo cx={106} cy={106} reduce={!!reduce} feliz={celebra} />
-      <Ojo cx={174} cy={106} reduce={!!reduce} feliz={celebra} />
+      <Ojo cx={104} cy={112} reduce={!!reduce} feliz={celebra} />
+      <Ojo cx={176} cy={112} reduce={!!reduce} feliz={celebra} />
 
       {/* ── Hocico ── */}
-      <ellipse cx="140" cy="150" rx="38" ry="28" fill="#f7efe6" />
       <ellipse
         cx="140"
-        cy="142"
+        cy="152"
         rx="30"
-        ry="15"
+        ry="22"
         fill="#ffffff"
-        opacity="0.5"
+        opacity="0.45"
         filter="url(#mp-suavito)"
       />
-      {/* Nariz redonda y ancha */}
-      <ellipse cx="140" cy="140" rx="15" ry="12" fill="#16181b" />
-      <ellipse cx="135" cy="136" rx="5" ry="3.5" fill="#ffffff" opacity="0.5" />
+      <ellipse cx="140" cy="148" rx="14" ry="11" fill="#1d1815" />
+      <ellipse cx="135" cy="144" rx="5" ry="3.5" fill="#ffffff" opacity="0.5" />
 
-      {/* Sonrisa abierta con lengua */}
+      {/* Sonrisa pequeña y cerrada, con el labio rosado apenas asomando */}
       {celebra ? (
         <>
-          <path d="M118 160q22 32 44 0z" fill="#2c1f1c" />
-          <path d="M130 174q10 11 20 0z" fill="#d38a8e" />
+          <path d="M124 166q16 24 32 0z" fill="#3a2c28" />
+          <path d="M133 178q7 8 14 0z" fill="#e08a92" />
         </>
       ) : (
         <>
-          <path d="M140 152v5" stroke="#16181b" strokeWidth="3.5" strokeLinecap="round" />
-          <path d="M122 160q18 21 36 0z" fill="#2c1f1c" />
-          <path d="M132 171q8 8 16 0z" fill="#d38a8e" />
+          <path d="M140 158v6" stroke="#1d1815" strokeWidth="3.5" strokeLinecap="round" />
+          <path
+            d="M124 166q8 10 16 2 8 8 16-2"
+            fill="none"
+            stroke="#1d1815"
+            strokeWidth="3.5"
+            strokeLinecap="round"
+          />
+          <path d="M133 172q7 7 14 0z" fill="#e08a92" />
         </>
       )}
     </motion.svg>
@@ -273,20 +258,30 @@ export function MapachePlush({
 function Oreja({ cx, cy, rot }: { cx: number; cy: number; rot: number }) {
   return (
     <g transform={`rotate(${rot} ${cx} ${cy})`}>
-      <ellipse cx={cx} cy={cy} rx="33" ry="36" fill="#7d848d" />
-      <ellipse cx={cx} cy={cy + 4} rx="20" ry="23" fill="url(#mp-oreja)" />
-      <ellipse cx={cx - 7} cy={cy - 12} rx="10" ry="8" fill="#ffffff" opacity="0.22" />
+      {/* Forma alta y redondeada, no un círculo */}
+      <path
+        d={`M${cx} ${cy - 44}c20 0 34 20 34 42s-14 34-34 34-34-12-34-34 14-42 34-42z`}
+        fill="#635a51"
+      />
+      <path
+        d={`M${cx} ${cy - 30}c13 0 22 14 22 29s-9 23-22 23-22-8-22-23 9-29 22-29z`}
+        fill="url(#mp-oreja)"
+      />
+      {/* Fleco crema alrededor del interior */}
+      <g stroke="#f2e8db" strokeWidth="4" strokeLinecap="round" opacity="0.9" fill="none">
+        <path d={`M${cx - 22} ${cy - 4}l-8-6M${cx - 24} ${cy + 10}l-9-2M${cx - 20} ${cy + 22}l-8 4`} />
+        <path d={`M${cx + 22} ${cy - 4}l8-6M${cx + 24} ${cy + 10}l9-2M${cx + 20} ${cy + 22}l8 4`} />
+      </g>
     </g>
   );
 }
 
-/** Mechones de pelo crema que sobresalen a los lados de la cara. */
-function Mechones({ lado }: { lado: "izq" | "der" }) {
-  const espejo = lado === "der";
+/** Pelo saliendo en punta a los lados de la cara. */
+function Mechones({ espejo = false }: { espejo?: boolean }) {
   return (
     <g transform={espejo ? "translate(280,0) scale(-1,1)" : undefined}>
-      <path d="M74 108l-34-14 30 22-32 4 34 8-24 18 30-10z" fill="#efe4d8" />
-      <path d="M74 108l-30-12 27 20-28 4 30 7z" fill="#d8cabc" opacity="0.7" />
+      <path d="M66 128l-26-8 22 16-24 6 26 4-18 14 24-8z" fill="#e8ddcd" />
+      <path d="M66 128l-22-6 19 14-20 5 22 3z" fill="#cfc2b0" opacity="0.65" />
     </g>
   );
 }
@@ -307,7 +302,7 @@ function Ojo({
       <path
         d={`M${cx - 18} ${cy + 6}q18 -22 36 0`}
         fill="none"
-        stroke="#14181d"
+        stroke="#1a1410"
         strokeWidth="6"
         strokeLinecap="round"
       />
@@ -324,22 +319,24 @@ function Ojo({
           : { duration: 5.5, times: [0, 0.93, 0.965, 1], repeat: Infinity, ease: "linear" }
       }
     >
-      {/* Globo del ojo con iris azul-grisáceo y pupila amplia */}
-      <ellipse cx={cx} cy={cy} rx="22" ry="24" fill="#eef2f6" />
+      {/* Contorno oscuro: la referencia los tiene delineados, no flotando */}
+      <ellipse cx={cx} cy={cy} rx="25" ry="27" fill="#241c16" />
+      <ellipse cx={cx} cy={cy} rx="22" ry="24" fill="#fdf8ee" />
+      {/* Iris ámbar */}
       <circle cx={cx} cy={cy + 1} r="19" fill="url(#mp-iris)" />
-      <circle cx={cx} cy={cy + 1} r="19" fill="none" stroke="#33465f" strokeWidth="2" opacity="0.7" />
-      <circle cx={cx} cy={cy + 2} r="11" fill="#101418" />
+      <circle cx={cx} cy={cy + 1} r="19" fill="none" stroke="#6d3f0b" strokeWidth="2.5" opacity="0.8" />
+      <circle cx={cx} cy={cy + 2} r="10" fill="#140f0a" />
       {/* Doble brillo: el grande da el vidrio, el chico el rebote del piso */}
-      <ellipse cx={cx - 6} cy={cy - 8} rx="6.5" ry="7" fill="#ffffff" opacity="0.95" />
-      <circle cx={cx + 7} cy={cy + 9} r="3" fill="#ffffff" opacity="0.6" />
+      <ellipse cx={cx - 6} cy={cy - 9} rx="6.5" ry="7" fill="#ffffff" opacity="0.95" />
+      <circle cx={cx + 8} cy={cy + 9} r="3" fill="#ffffff" opacity="0.65" />
       {/* Párpado inferior levantado: hace que el ojo sonría sin cerrarse */}
       <path
-        d={`M${cx - 19} ${cy + 15}q19 9 38 0`}
+        d={`M${cx - 20} ${cy + 17}q20 9 40 0`}
         fill="none"
-        stroke="#6b727b"
+        stroke="#7a6f64"
         strokeWidth="5"
         strokeLinecap="round"
-        opacity="0.55"
+        opacity="0.5"
       />
     </motion.g>
   );

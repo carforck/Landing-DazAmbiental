@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { Check, Lock } from "lucide-react";
 import { MapachePlush } from "@/components/MapachePlush";
 import { CATEGORIAS, PREGUNTAS, type Categoria } from "@/lib/mision";
 
@@ -18,9 +17,12 @@ interface Punto {
  */
 export function MapaSendero({
   indiceActual,
+  frontera,
   onAbrirEstacion,
 }: {
   indiceActual: number;
+  /** Última parada desbloqueada: hasta ahí se puede tocar para volver. */
+  frontera: number;
   onAbrirEstacion: (indice: number) => void;
 }) {
   const reduce = useReducedMotion();
@@ -101,7 +103,7 @@ export function MapaSendero({
           const zona = CATEGORIAS.find((c) => c.id === pregunta.categoria);
           const abreZona = zona?.preguntas[0] === pregunta.numero;
           const estado =
-            i < indiceActual ? "completada" : i === indiceActual ? "actual" : "bloqueada";
+            i === indiceActual ? "actual" : i <= frontera ? "completada" : "bloqueada";
 
           return (
             <div key={pregunta.numero}>
@@ -115,7 +117,7 @@ export function MapaSendero({
                   <Estacion
                     numero={pregunta.numero}
                     estado={estado}
-                    onClick={() => estado === "actual" && onAbrirEstacion(i)}
+                    onClick={() => onAbrirEstacion(i)}
                   />
                 </div>
               </div>
@@ -162,7 +164,7 @@ function TituloZona({ zona, activa }: { zona: Categoria; activa: boolean }) {
   return (
     <div className="relative z-10 flex justify-center pt-10 pb-2">
       <span
-        className={`rounded-full px-4 py-1.5 font-display text-xs font-semibold tracking-wide uppercase transition duration-200 ${
+        className={`rounded-full px-4 py-1.5 font-mono text-[11px] font-bold tracking-[0.2em] uppercase transition duration-200 ${
           activa
             ? "bg-oro-500/15 text-oro-300 ring-1 ring-oro-500/30"
             : "bg-selva-800/70 text-crema/30"
@@ -184,16 +186,18 @@ function Estacion({
   onClick: () => void;
 }) {
   const base =
-    "relative z-10 grid h-16 w-16 place-items-center rounded-full font-display text-lg font-bold transition duration-200";
+    "relative z-10 grid h-16 w-16 place-items-center rounded-full text-lg font-black transition duration-200";
 
   if (estado === "completada") {
     return (
-      <div
-        className={`${base} bg-oro-500 text-selva-950 shadow-lg shadow-oro-500/20`}
-        aria-label={`Situación ${numero}, respondida`}
+      <button
+        type="button"
+        onClick={onClick}
+        className={`${base} cursor-pointer bg-oro-500 text-selva-950 shadow-lg shadow-oro-500/20 hover:bg-oro-400`}
+        aria-label={`Situación ${numero}, respondida. Volver a ella`}
       >
-        <Check size={26} strokeWidth={3} aria-hidden />
-      </div>
+        <span aria-hidden>✓</span>
+      </button>
     );
   }
 
@@ -201,9 +205,10 @@ function Estacion({
     return (
       <div
         className={`${base} bg-selva-800 text-crema/25 ring-1 ring-crema/5`}
-        aria-label={`Situación ${numero}, bloqueada`}
+        aria-label={`Situación ${numero}, todavía sin abrir`}
       >
-        <Lock size={20} aria-hidden />
+        {/* El número apagado dice más que un candado: se ve cuánto falta */}
+        <span aria-hidden>{numero}</span>
       </div>
     );
   }

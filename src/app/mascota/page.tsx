@@ -100,7 +100,7 @@ export default function ValidarMascota() {
 
         <p className="mt-8 text-sm text-crema/40">
           Dibujo original hecho para este proyecto. Toma de la referencia el
-          lenguaje visual —proporciones, volumen, brillos—, que es libre; no
+          lenguaje visual (proporciones, volumen, brillos), que es libre. No
           reproduce ningún personaje ni modelo de terceros.
         </p>
       </div>

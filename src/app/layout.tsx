@@ -1,15 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Outfit, Work_Sans } from "next/font/google";
+import { Roboto, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 
-const outfit = Outfit({
-  variable: "--font-outfit",
+/*
+  Sistema de sainet.co, verificado contra su hero: los titulares son Roboto en
+  peso 900 con tracking negativo, no Comfortaa (Comfortaa está en su hoja de
+  estilos pero no maneja los títulos). Roboto Mono queda para las etiquetas.
+
+  De paso salimos del par Outfit/Work Sans, que es la firma tipográfica de medio
+  generador de landings.
+*/
+const roboto = Roboto({
+  variable: "--font-roboto",
   subsets: ["latin"],
+  weight: ["400", "500", "700", "900"],
   display: "swap",
 });
 
-const workSans = Work_Sans({
-  variable: "--font-work-sans",
+const robotoMono = Roboto_Mono({
+  variable: "--font-roboto-mono",
   subsets: ["latin"],
   display: "swap",
 });
@@ -43,7 +52,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es-CO"
-      className={`${outfit.variable} ${workSans.variable} h-full antialiased`}
+      className={`${roboto.variable} ${robotoMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-selva-950">{children}</body>
     </html>

@@ -5,17 +5,22 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
 import { MapaSendero } from "@/components/MapaSendero";
 import { PanelPregunta } from "@/components/PanelPregunta";
+import { FondoVideo } from "@/components/FondoVideo";
 import { sesion, useSesion } from "@/lib/sesion";
 import { PREGUNTAS, type Letra } from "@/lib/mision";
 
 export default function MisionPage() {
   const router = useRouter();
   const { participante, respuestas } = useSesion();
-  // Arranca cerrado a propósito: primero se ve el sendero completo y la parada
-  // que pulsa; de ahí en adelante cada situación se abre sola al avanzar.
   const [abierta, setAbierta] = useState(false);
 
-  // Sin registro no hay misión: nombre, documento y habeas data son obligatorios.
+  /*
+    `indiceManual` es null mientras el participante siga el orden natural: ahí
+    la parada abierta es la frontera. En cuanto navega a una anterior pasa a
+    mandar él, y así puede revisar sin que el avance se lo mueva de sitio.
+  */
+  const [indiceManual, setIndiceManual] = useState<number | null>(null);
+
   useEffect(() => {
     if (!sesion.leer().participante) router.replace("/registro");
   }, [router]);
@@ -23,51 +28,88 @@ export default function MisionPage() {
   if (!participante) return null;
 
   const respondidas = Object.keys(respuestas).length;
-  const indice = Math.min(respondidas, PREGUNTAS.length - 1);
+  const frontera = Math.min(respondidas, PREGUNTAS.length - 1);
+  const indice = indiceManual ?? frontera;
   const pregunta = PREGUNTAS[indice];
+  const previa = respuestas[pregunta.numero];
+
+  function irA(nuevo: number) {
+    if (nuevo < 0 || nuevo > frontera) return;
+    setIndiceManual(nuevo === frontera ? null : nuevo);
+    setAbierta(true);
+  }
 
   function responder(letra: Letra) {
-    sesion.guardarRespuestas({ ...respuestas, [pregunta.numero]: letra });
+    const actualizadas = { ...respuestas, [pregunta.numero]: letra };
+    sesion.guardarRespuestas(actualizadas);
     setAbierta(false);
 
-    const completo = respondidas + 1 === PREGUNTAS.length;
-    // Pausa para ver al mapache llegar a la siguiente estación.
+    const completo = Object.keys(actualizadas).length === PREGUNTAS.length;
+    const revisaba = Boolean(previa);
+
     window.setTimeout(
-      () => (completo ? router.push("/resultados") : setAbierta(true)),
-      completo ? 700 : 1100,
+      () => {
+        if (completo && !revisaba) {
+          router.push("/resultados");
+          return;
+        }
+        // Al corregir una parada vieja, seguimos hacia adelante desde ahí.
+        setIndiceManual(revisaba ? Math.min(indice + 1, frontera) : null);
+        setAbierta(true);
+      },
+      completo && !revisaba ? 700 : 1100,
     );
   }
 
   return (
-    <main className="bg-follaje min-h-dvh bg-selva-950">
-      <header className="sticky top-0 z-30 border-b border-oro-500/10 bg-selva-950/90 px-5 py-4 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-md items-center justify-between gap-4">
-          <div className="min-w-0">
-            <p className="truncate font-display font-semibold text-crema">
-              {participante.nombre.split(" ")[0]}, este es tu sendero
-            </p>
-            <p className="text-xs text-crema/45">
-              {respondidas} de {PREGUNTAS.length} situaciones
-            </p>
-          </div>
-          <span className="shrink-0 rounded-full bg-oro-500/15 px-3 py-1 font-display text-xs font-semibold text-oro-300">
-            {participante.rol}
-          </span>
-        </div>
-      </header>
+    <main className="relative min-h-dvh bg-selva-950">
+      {/* Muy apagado a propósito: aquí se lee y se toca, el fondo solo ambienta */}
+      <FondoVideo
+        webm="/hero/sendero.webm"
+        mp4="/hero/sendero.mp4"
+        poster="/hero/sendero-poster.jpg"
+        velo="bg-selva-950/88"
+      />
 
-      <div className="pt-6">
-        <MapaSendero indiceActual={indice} onAbrirEstacion={() => setAbierta(true)} />
+      <div className="relative z-10">
+        <header className="sticky top-0 z-30 bg-selva-950/85 px-5 py-4 backdrop-blur-md">
+          <div className="mx-auto flex max-w-md items-center justify-between gap-4">
+            <div className="min-w-0">
+              <p className="truncate font-black tracking-tight text-crema">
+                {participante.nombre.split(" ")[0]}, tu sendero
+              </p>
+              <p className="font-mono text-[11px] text-crema/45">
+                {respondidas} de {PREGUNTAS.length} paradas
+              </p>
+            </div>
+            <span className="shrink-0 rounded-full bg-oro-500/15 px-3 py-1 font-mono text-[11px] tracking-wide text-oro-300">
+              {participante.rol}
+            </span>
+          </div>
+        </header>
+
+        <div className="pt-6">
+          <MapaSendero
+            indiceActual={indice}
+            frontera={frontera}
+            onAbrirEstacion={irA}
+          />
+        </div>
       </div>
 
       <AnimatePresence>
-        {abierta && respondidas < PREGUNTAS.length && (
+        {abierta && (
           <PanelPregunta
             key={pregunta.numero}
             pregunta={pregunta}
             posicion={indice + 1}
             total={PREGUNTAS.length}
+            respuestaPrevia={previa}
+            puedeAnterior={indice > 0}
+            puedeSiguiente={indice < frontera}
             onResponder={responder}
+            onAnterior={() => irA(indice - 1)}
+            onSiguiente={() => irA(indice + 1)}
             onCerrar={() => setAbierta(false)}
           />
         )}
