@@ -204,7 +204,7 @@ function BarraSuperior() {
 
 function Hero() {
   return (
-    <section className="relative flex min-h-[92vh] items-center overflow-hidden px-6 py-24 sm:px-10">
+    <section className="relative flex min-h-[96vh] items-center overflow-hidden px-6 py-24 sm:px-10">
       <HeroMedia
         webm="/hero/mapaches.webm"
         mp4="/hero/mapaches.mp4"
@@ -225,7 +225,7 @@ function Hero() {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.7 }}
-          className="titular mt-6 text-[3.4rem] text-crema drop-shadow-[0_4px_40px_rgba(0,0,0,0.6)] sm:text-7xl lg:text-[6.5rem]"
+          className="titular mt-6 text-[4.2rem] text-crema drop-shadow-[0_4px_40px_rgba(0,0,0,0.6)] sm:text-[6.5rem] lg:text-[9rem]"
         >
           <span className="block">Misión</span>
           <span className="block text-oro-400">
@@ -507,20 +507,17 @@ function Cierre() {
               Hablemos
             </p>
             <a
-              href="mailto:contacto@dazambiental.com"
+              href="mailto:daz.ambiente@gmail.com"
               className="mt-4 block cursor-pointer text-lg font-bold text-crema transition-colors duration-200 hover:text-oro-300"
             >
-              contacto@dazambiental.com
+              daz.ambiente@gmail.com
             </a>
             <a
-              href="tel:+573105080356"
+              href="tel:+573002295181"
               className="mt-1 block cursor-pointer text-lg font-bold text-crema transition-colors duration-200 hover:text-oro-300"
             >
-              +57 310 508 0356
+              +57 300 2295181
             </a>
-            <p className="mt-5 font-mono text-[11px] text-crema/35">
-              Datos por confirmar con el cliente
-            </p>
           </motion.div>
         </div>
 

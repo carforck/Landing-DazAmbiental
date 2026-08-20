@@ -23,29 +23,74 @@ const robotoMono = Roboto_Mono({
   display: "swap",
 });
 
+const SITIO = "https://landing-daz-ambiental.vercel.app";
+const TITULO = "Misión Mapache · Convivir con la naturaleza";
+const DESCRIPCION =
+  "Juego de 15 situaciones reales para descubrir cómo convivimos con los mapaches del resort. Cinco minutos, sin respuestas malas. Por DAZ Ambiental.";
+
 export const metadata: Metadata = {
-  title: "Misión Mapache · Convivir con la naturaleza",
-  description:
-    "Diagnóstico interactivo de 5 minutos sobre convivencia con la fauna silvestre. Aquí no venimos a juzgar: venimos a descubrir.",
+  /*
+    Sin metadataBase, Next emite la ruta relativa de la imagen y WhatsApp,
+    LinkedIn y Slack no resuelven la vista previa. Es el error más común al
+    compartir un enlace.
+  */
+  metadataBase: new URL(SITIO),
+  title: {
+    default: TITULO,
+    template: "%s · Misión Mapache",
+  },
+  description: DESCRIPCION,
   applicationName: "Misión Mapache",
+  authors: [{ name: "DAZ Ambiental" }],
+  creator: "Vanttage",
+  publisher: "DAZ Ambiental",
+  category: "education",
+  keywords: [
+    "convivencia con fauna silvestre",
+    "mapaches",
+    "capacitación ambiental",
+    "hoteles y resorts",
+    "manejo de fauna",
+    "DAZ Ambiental",
+    "Barú",
+    "Cartagena",
+  ],
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: "Misión Mapache · Convivir con la naturaleza",
-    description:
-      "Un recorrido de 15 situaciones reales para descubrir cómo convivimos con los mapaches del resort. Toma 5 minutos.",
     type: "website",
     locale: "es_CO",
+    url: SITIO,
     siteName: "Misión Mapache",
+    title: TITULO,
+    description: DESCRIPCION,
+    images: [
+      {
+        url: "/og.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Misión Mapache · un juego de 15 situaciones sobre convivencia con fauna silvestre",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Misión Mapache · Convivir con la naturaleza",
-    description:
-      "Un recorrido de 15 situaciones reales para descubrir cómo convivimos con los mapaches del resort.",
+    title: TITULO,
+    description: DESCRIPCION,
+    images: ["/og.jpg"],
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
+  formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#131a08",
+  themeColor: "#151b0d",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
