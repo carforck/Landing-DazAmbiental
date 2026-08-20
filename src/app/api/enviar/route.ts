@@ -59,6 +59,7 @@ export async function POST(request: Request) {
   });
 
   const webhook = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
+  const token = process.env.GOOGLE_SHEETS_TOKEN;
 
   if (!webhook) {
     // En desarrollo todavía no hay Sheet del cliente: no es un error del flujo.
@@ -70,7 +71,12 @@ export async function POST(request: Request) {
     const respuesta = await fetch(webhook, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(fila),
+      /*
+        El Apps Script tiene que quedar abierto a cualquiera para que esta ruta
+        pueda escribir, así que la clave compartida es lo único que impide que
+        alguien con la URL inserte filas falsas en el Sheet del cliente.
+      */
+      body: JSON.stringify(token ? { ...fila, token } : fila),
     });
 
     if (!respuesta.ok) {

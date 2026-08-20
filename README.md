@@ -21,6 +21,9 @@ cp .env.example .env.local    # y pega la URL del webhook cuando exista
 Sin `GOOGLE_SHEETS_WEBHOOK_URL` el flujo funciona igual: la fila queda registrada
 en los logs del servidor en vez de viajar al Sheet.
 
+Para conectar el Google Sheet del cliente, sigue
+[`apps-script/README-SHEET.md`](./apps-script/README-SHEET.md).
+
 ## Rutas
 
 | Ruta | Qué es |
@@ -116,7 +119,6 @@ sobre un máximo de 15. Cuatro niveles de resultado: **Guardián de la Fauna**
 ## Pendientes del cliente
 
 - [ ] Confirmación final de las 15 preguntas (siguen en revisión)
-- [ ] Cuenta de Google donde recibirá el Sheet de resultados
 - [ ] Datos de contacto reales para la landing
 - [ ] Material propio del resort para reemplazar el metraje del hero
 - [ ] Aprobación del diseño del sendero
