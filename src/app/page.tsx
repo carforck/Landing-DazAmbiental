@@ -309,7 +309,8 @@ function Manifiesto() {
 const PASOS = [
   {
     titulo: "Te presentas.",
-    texto: "Tu nombre, tu documento y si juegas como parte del equipo o como huésped.",
+    texto:
+      "Tu nombre, tu documento y si juegas como parte del equipo, como huésped o desde la comunidad.",
   },
   {
     titulo: "Sales al sendero.",

@@ -1,7 +1,16 @@
 import config from "@/config/preguntas.json";
 
 export type Letra = "A" | "B" | "C" | "D";
-export type Rol = "Colaborador/a" | "Huésped";
+/**
+ * Perfiles con los que se puede jugar. El orden es el que ve el participante.
+ *
+ * Se declara aquí y no en la pantalla de registro para que el día que el
+ * cliente pida otro perfil solo haya que tocar un sitio. El tipo sale de la
+ * propia lista, así no pueden quedar desalineados.
+ */
+export const ROLES = ["Colaborador/a", "Huésped", "Comunidad"] as const;
+
+export type Rol = (typeof ROLES)[number];
 
 export interface Pregunta {
   numero: number;

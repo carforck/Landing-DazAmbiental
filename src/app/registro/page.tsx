@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { Lottie } from "lottie-react";
 import { RastroHuellas } from "@/components/RastroHuellas";
 import { sesion } from "@/lib/sesion";
-import { PREGUNTAS, type Rol } from "@/lib/mision";
+import { PREGUNTAS, ROLES, type Rol } from "@/lib/mision";
 
 /*
   Pantalla en claro, a dos columnas: el formulario a la izquierda y la animación
@@ -18,7 +18,6 @@ import { PREGUNTAS, type Rol } from "@/lib/mision";
   formulario, estorban.
 */
 
-const ROLES: Rol[] = ["Colaborador/a", "Huésped"];
 
 export default function RegistroPage() {
   const router = useRouter();
@@ -100,14 +99,14 @@ export default function RegistroPage() {
               <legend className="font-mono text-[11px] tracking-[0.2em] text-selva-700/60 uppercase">
                 Juegas como
               </legend>
-              <div className="mt-3 grid grid-cols-2 gap-3">
+              <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
                 {ROLES.map((r) => (
                   <button
                     key={r}
                     type="button"
                     onClick={() => setRol(r)}
                     aria-pressed={rol === r}
-                    className={`cursor-pointer rounded-xl border px-4 py-4 font-bold transition-colors duration-200 ${
+                    className={`cursor-pointer rounded-xl border px-3 py-4 text-sm font-bold transition-colors duration-200 ${
                       rol === r
                         ? "border-oro-600 bg-oro-500/15 text-selva-900"
                         : "border-selva-900/15 text-selva-700/70 hover:border-selva-900/35"
