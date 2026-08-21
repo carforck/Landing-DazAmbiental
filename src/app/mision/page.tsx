@@ -63,13 +63,13 @@ export default function MisionPage() {
 
   return (
     <main className="relative min-h-dvh bg-selva-950">
-      {/* Sin velo, para ver el metraje pleno. Si la legibilidad sufre, el
-          componente acepta uno: velo="bg-selva-950/60" y listo. */}
+      {/* Velo apenas perceptible: asienta el metraje con la paleta y da un
+          piso de contraste al texto, sin apagar la imagen. */}
       <FondoVideo
         webm="/hero/sendero.webm"
         mp4="/hero/sendero.mp4"
         poster="/hero/sendero-poster.jpg"
-        velo="bg-transparent"
+        velo="bg-selva-950/30"
       />
 
       <div className="relative z-10">
