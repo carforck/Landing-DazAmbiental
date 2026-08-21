@@ -39,7 +39,8 @@ export interface Nivel {
 
 export interface Participante {
   nombre: string;
-  documento: string;
+  /** Número completo, con indicativo: "+57 3001234567". */
+  telefono: string;
   rol: Rol;
   autoriza: true;
 }

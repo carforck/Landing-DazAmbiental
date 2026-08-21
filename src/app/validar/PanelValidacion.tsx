@@ -16,7 +16,7 @@ import {
 
 const PARTICIPANTE = {
   nombre: "Zulay Pérez (prueba)",
-  documento: "1010101010",
+  telefono: "+57 3001234567",
   rol: "Colaborador/a" as Rol,
   autoriza: true as const,
 };

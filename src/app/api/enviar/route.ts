@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
   const { participante, respuestas } = cuerpo;
 
-  if (!participante?.nombre || !participante.documento || !participante.autoriza) {
+  if (!participante?.nombre || !participante.telefono || !participante.autoriza) {
     return NextResponse.json(
       { ok: false, motivo: "participante-incompleto" },
       { status: 400 },
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
   const fila: Record<string, string | number> = {
     "Fecha y hora": new Date().toISOString(),
     "Nombre completo": participante.nombre,
-    "Documento de identidad": participante.documento,
+    "Número de contacto": participante.telefono,
     Perfil: participante.rol,
     Puntaje: puntaje,
     "Máximo": MAXIMO,

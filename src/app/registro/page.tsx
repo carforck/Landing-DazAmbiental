@@ -8,6 +8,7 @@ import { Lottie } from "lottie-react";
 import { RastroHuellas } from "@/components/RastroHuellas";
 import { sesion } from "@/lib/sesion";
 import { PREGUNTAS, ROLES, type Rol } from "@/lib/mision";
+import { PAISES, PAIS_POR_DEFECTO, bandera } from "@/lib/paises";
 
 /*
   Pantalla en claro, a dos columnas: el formulario a la izquierda y la animación
@@ -22,25 +23,31 @@ import { PREGUNTAS, ROLES, type Rol } from "@/lib/mision";
 export default function RegistroPage() {
   const router = useRouter();
   const [nombre, setNombre] = useState("");
-  const [documento, setDocumento] = useState("");
+  const [pais, setPais] = useState(PAIS_POR_DEFECTO.iso);
+  const [telefono, setTelefono] = useState("");
   const [rol, setRol] = useState<Rol | null>(null);
   const [autoriza, setAutoriza] = useState(false);
   const [error, setError] = useState("");
 
-  const listo = nombre.trim().length > 2 && documento.trim().length > 3 && rol && autoriza;
+  const indicativo =
+    PAISES.find((p) => p.iso === pais)?.indicativo ?? PAIS_POR_DEFECTO.indicativo;
+  // Siete dígitos es el mínimo razonable: filtra dedazos sin rechazar números
+  // cortos de países que sí los tienen.
+  const listo =
+    nombre.trim().length > 2 && telefono.trim().length >= 7 && rol && autoriza;
 
   function comenzar() {
     if (!listo) {
       setError(
         !autoriza
           ? "Necesitamos tu autorización para salir al sendero."
-          : "Completa tus datos para continuar.",
+          : "Completa tu nombre y tu número de contacto.",
       );
       return;
     }
     sesion.guardarParticipante({
       nombre: nombre.trim(),
-      documento: documento.trim(),
+      telefono: `${indicativo} ${telefono.trim()}`,
       rol: rol!,
       autoriza: true,
     });
@@ -87,13 +94,51 @@ export default function RegistroPage() {
               placeholder="Ej. María Fernanda Pérez"
               autoComplete="name"
             />
-            <Campo
-              etiqueta="Documento de identidad"
-              valor={documento}
-              onChange={(v) => setDocumento(v.replace(/\D/g, ""))}
-              placeholder="Solo números"
-              inputMode="numeric"
-            />
+            <fieldset>
+              <legend className="font-mono text-[11px] tracking-[0.2em] text-selva-700/60 uppercase">
+                Número de contacto
+              </legend>
+              <div className="mt-3 flex gap-2">
+                {/*
+                  El indicativo va en un select nativo a propósito: en celular
+                  abre la rueda del sistema, que se maneja mucho mejor que
+                  cualquier desplegable propio.
+                */}
+                <div className="relative shrink-0">
+                  <select
+                    value={pais}
+                    onChange={(e) => setPais(e.target.value)}
+                    aria-label="Indicativo del país"
+                    className="h-full cursor-pointer appearance-none rounded-xl border border-selva-900/15 bg-white/70 py-3.5 pr-8 pl-4 text-selva-900 transition-colors duration-200 hover:border-selva-900/30 focus:border-oro-600 focus:outline-none"
+                  >
+                    {PAISES.map((p) => (
+                      <option key={p.iso} value={p.iso}>
+                        {bandera(p.iso)} {p.indicativo} · {p.nombre}
+                      </option>
+                    ))}
+                  </select>
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-selva-700/40"
+                  >
+                    ▾
+                  </span>
+                </div>
+
+                <input
+                  value={telefono}
+                  onChange={(e) => setTelefono(e.target.value.replace(/\D/g, ""))}
+                  placeholder="300 123 4567"
+                  inputMode="tel"
+                  autoComplete="tel-national"
+                  aria-label="Número de contacto"
+                  className="w-full min-w-0 rounded-xl border border-selva-900/15 bg-white/70 px-4 py-3.5 text-selva-900 transition-colors duration-200 placeholder:text-selva-900/25 hover:border-selva-900/30 focus:border-oro-600 focus:outline-none"
+                />
+              </div>
+              <p className="mt-2 font-mono text-[11px] text-selva-700/45">
+                Se guardará como {indicativo} {telefono || "…"}
+              </p>
+            </fieldset>
 
             <fieldset>
               <legend className="font-mono text-[11px] tracking-[0.2em] text-selva-700/60 uppercase">
@@ -127,8 +172,9 @@ export default function RegistroPage() {
               />
               <span className="text-sm leading-relaxed text-selva-700/85">
                 Autorizo a <strong className="text-selva-900">DAZ Ambiental</strong>{" "}
-                el tratamiento de mis datos personales con fines del diagnóstico de
-                convivencia con fauna silvestre, conforme a la Ley 1581 de 2012.{" "}
+                el tratamiento de mi nombre y número de contacto con fines del
+                diagnóstico de convivencia con fauna silvestre, conforme a la Ley
+                1581 de 2012.{" "}
                 <Link
                   href="/#datos"
                   className="text-oro-600 underline underline-offset-2"
@@ -175,6 +221,13 @@ export default function RegistroPage() {
           />
         </motion.div>
       </div>
+
+      <footer className="relative z-30 mt-8 border-t border-selva-900/10 pt-6 pb-2 text-center">
+        <p className="font-mono text-[11px] tracking-wide text-selva-700/45">
+          © {new Date().getFullYear()} DAZ Ambiental. Todos los derechos
+          reservados.
+        </p>
+      </footer>
     </main>
   );
 }

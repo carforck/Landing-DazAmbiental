@@ -310,7 +310,7 @@ const PASOS = [
   {
     titulo: "Te presentas.",
     texto:
-      "Tu nombre, tu documento y si juegas como parte del equipo, como huésped o desde la comunidad.",
+      "Tu nombre, tu número de contacto y si juegas como parte del equipo, como huésped o desde la comunidad.",
   },
   {
     titulo: "Sales al sendero.",
@@ -436,7 +436,7 @@ function Datos() {
         <div className="mt-10 space-y-6 text-lg leading-relaxed text-selva-700/85">
           <p>
             Al participar autorizas a DAZ Ambiental a tratar tus datos personales
-            (nombre, documento y respuestas) con la única finalidad de elaborar el
+            (nombre, número de contacto y respuestas) con la única finalidad de elaborar el
             diagnóstico de convivencia con fauna silvestre y sus estadísticas
             agregadas, conforme a la Ley 1581 de 2012 y el Decreto 1377 de 2013.
           </p>
