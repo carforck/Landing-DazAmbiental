@@ -23,7 +23,7 @@ const robotoMono = Roboto_Mono({
   display: "swap",
 });
 
-const SITIO = "https://landing-daz-ambiental.vercel.app";
+const SITIO = "https://dazambiental.com";
 const TITULO = "Misión Mapache · Convivir con la naturaleza";
 const DESCRIPCION =
   "Juego de 15 situaciones reales para descubrir cómo convivimos con los mapaches del resort. Cinco minutos, sin respuestas malas. Por DAZ Ambiental.";

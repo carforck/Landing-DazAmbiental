@@ -4,7 +4,7 @@ import type { MetadataRoute } from "next";
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: "https://landing-daz-ambiental.vercel.app",
+      url: "https://dazambiental.com",
       changeFrequency: "monthly",
       priority: 1,
     },

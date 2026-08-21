@@ -12,6 +12,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/registro", "/mision", "/resultados", "/mascota", "/lottie", "/api/"],
     },
-    sitemap: "https://landing-daz-ambiental.vercel.app/sitemap.xml",
+    sitemap: "https://dazambiental.com/sitemap.xml",
   };
 }
