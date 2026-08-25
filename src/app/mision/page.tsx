@@ -79,15 +79,19 @@ export default function MisionPage() {
           fill
           priority
           sizes="(max-width: 900px) 900px, 1920px"
-          className="object-cover"
+          /* Desenfoque y desaturación: el mapa ambienta, no compite */
+          className="mapa-deriva object-cover blur-[3px] saturate-[0.75]"
         />
         {/*
           Velo doble: uno parejo que baja el brillo general y un degradado que
           carga los extremos, donde van la cabecera y el final del recorrido.
           Sin esto el mapa es tan luminoso que las estaciones se pierden.
         */}
-        <div className="absolute inset-0 bg-selva-950/58" />
-        <div className="absolute inset-0 bg-gradient-to-b from-selva-950/85 via-transparent to-selva-950/80" />
+        <div className="absolute inset-0 bg-selva-950/72" />
+        <div className="absolute inset-0 bg-gradient-to-b from-selva-950/92 via-selva-950/45 to-selva-950/92" />
+        {/* Viñeta: cierra los bordes y empuja la mirada al centro, que es por
+            donde baja la ruta */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(21,27,13,0.72)_100%)]" />
       </div>
       <div className="relative z-10">
         <header className="sticky top-0 z-30 bg-selva-950/70 px-5 py-4 backdrop-blur-md">

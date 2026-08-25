@@ -183,15 +183,12 @@ function Estacion({
   estado: "completada" | "actual" | "bloqueada";
   onClick: () => void;
 }) {
-  const base =
-    "relative z-10 grid h-[70px] w-[70px] place-items-center rounded-full text-xl font-black transition duration-200";
-
   if (estado === "completada") {
     return (
       <button
         type="button"
         onClick={onClick}
-        className={`${base} cursor-pointer bg-lima text-selva-950 shadow-[0_10px_24px_-10px_rgba(143,191,63,0.9)] hover:bg-lima-claro`}
+        className="estacion estacion-tocable cursor-pointer bg-[radial-gradient(circle_at_32%_28%,var(--color-lima-claro),var(--color-lima)_62%,#6d9a2e)] text-2xl text-selva-950 shadow-[0_10px_26px_-8px_rgba(143,191,63,0.85),inset_0_-3px_0_rgba(0,0,0,0.16)] ring-2 ring-crema/60"
         aria-label={`Parada ${numero}, respondida. Volver a ella`}
       >
         <span aria-hidden>✓</span>
@@ -202,7 +199,7 @@ function Estacion({
   if (estado === "bloqueada") {
     return (
       <div
-        className={`${base} bg-selva-950/55 text-crema/35 ring-1 ring-crema/12 backdrop-blur-sm`}
+        className="estacion bg-selva-950/50 text-xl text-crema/35 ring-2 ring-crema/12 backdrop-blur-sm"
         aria-label={`Parada ${numero}, todavía sin abrir`}
       >
         {/* El número apagado dice más que un candado: se ve cuánto falta */}
@@ -215,11 +212,16 @@ function Estacion({
     <button
       type="button"
       onClick={onClick}
-      className={`${base} cursor-pointer bg-mango text-selva-950 shadow-[0_12px_30px_-8px_rgba(240,169,46,0.95)] ring-4 ring-mango/30 hover:bg-mango-claro`}
+      className="estacion estacion-tocable estacion-actual cursor-pointer bg-[radial-gradient(circle_at_32%_26%,var(--color-mango-claro),var(--color-mango)_58%,#d18c14)] text-2xl text-selva-950 shadow-[0_14px_34px_-6px_rgba(240,169,46,0.95),inset_0_-3px_0_rgba(0,0,0,0.18)] ring-[3px] ring-crema/75"
       aria-label={`Parada ${numero}, tu parada actual. Abrir`}
     >
+      {/* Dos anillos que se expanden a distinto ritmo: llama sin parpadear */}
       <span
-        className="absolute -inset-1.5 animate-ping rounded-full bg-mango/25"
+        className="absolute -inset-2 animate-ping rounded-full bg-mango/30"
+        aria-hidden
+      />
+      <span
+        className="absolute -inset-5 rounded-full ring-2 ring-mango/35"
         aria-hidden
       />
       {numero}

@@ -85,21 +85,31 @@ export function PanelPregunta({
       <div className="relative mx-auto flex min-h-dvh max-w-2xl flex-col px-5 py-6 sm:px-8">
         {/* ── Progreso ── */}
         <div className="flex items-center gap-4">
-          <div className="relative h-4 flex-1 overflow-hidden rounded-full bg-selva-900/10 inset-shadow-sm">
-            <motion.div
-              className="barra-relleno relative h-full overflow-hidden rounded-full"
-              initial={false}
-              animate={{ width: `${avance}%` }}
-              transition={{ type: "spring", stiffness: 120, damping: 18 }}
-            />
+          {/*
+            El contenedor exterior no recorta: si el mapache viviera dentro del
+            que oculta el desbordamiento del relleno, saldría cortado por arriba.
+          */}
+          <div className="relative flex-1 pt-6">
+            <div className="h-4 overflow-hidden rounded-full bg-selva-900/12">
+              <motion.div
+                className="barra-relleno relative h-full overflow-hidden rounded-full"
+                initial={false}
+                animate={{ width: `${avance}%` }}
+                transition={{ type: "spring", stiffness: 120, damping: 18 }}
+              />
+            </div>
+
             {/* El mapache va montado en la punta de la barra */}
             <motion.div
-              className="pointer-events-none absolute -top-3 z-10"
+              className="pointer-events-none absolute top-0 z-10"
               initial={false}
-              animate={{ left: `calc(${avance}% - 20px)` }}
+              animate={{ left: `calc(${avance}% - 22px)` }}
               transition={{ type: "spring", stiffness: 120, damping: 18 }}
             >
-              <MapachePlush className="h-10 w-10 drop-shadow" pose="caminando" />
+              <MapachePlush
+                className="h-11 w-11 drop-shadow-[0_4px_8px_rgba(21,27,13,0.28)]"
+                pose="caminando"
+              />
             </motion.div>
           </div>
 
