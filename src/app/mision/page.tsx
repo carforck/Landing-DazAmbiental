@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
+import { EscenaAerea } from "@/components/EscenaAerea";
 import { MapaSendero } from "@/components/MapaSendero";
 import { PanelPregunta } from "@/components/PanelPregunta";
 import { sesion, useSesion } from "@/lib/sesion";
@@ -65,7 +66,11 @@ export default function MisionPage() {
   }
 
   return (
-    <main className="escenario-vivo relative min-h-dvh overflow-hidden bg-crema">
+    <main className="relative min-h-dvh overflow-hidden bg-[#dff0d2]">
+      {/* Vista aérea del manglar, fija: el mapa se desplaza sobre ella */}
+      <EscenaAerea className="fixed inset-0" />
+      {/* Velo mínimo, solo para que el camino y las tarjetas despeguen */}
+      <div aria-hidden className="fixed inset-0 bg-crema/35" />
       <div className="relative z-10">
         <header className="sticky top-0 z-30 bg-crema/80 px-5 py-4 backdrop-blur-md">
           <div className="mx-auto flex max-w-md items-center justify-between gap-4">

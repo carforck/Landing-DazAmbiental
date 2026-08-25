@@ -74,7 +74,7 @@ export function MapaSendero({
   const posicionMapache = puntos[Math.min(indiceActual, puntos.length - 1)];
 
   return (
-    <div ref={contenedor} className="relative mx-auto w-full max-w-md px-4 pb-28">
+    <div ref={contenedor} className="relative mx-auto w-full max-w-md px-4 pt-10 pb-28">
       {/* Sendero, detrás de las estaciones */}
       <svg
         aria-hidden
@@ -85,17 +85,23 @@ export function MapaSendero({
           <>
             <path
               d={trazo(puntos)}
-              stroke="rgb(32 42 21 / 0.10)"
-              strokeWidth="18"
+              stroke="rgb(49 61 26 / 0.22)"
+              strokeWidth="20"
               strokeLinecap="round"
             />
             <path
               d={trazo(puntos)}
-              stroke="var(--color-lima)"
+              stroke="var(--color-crema)"
+              strokeWidth="13"
+              strokeLinecap="round"
+            />
+            <path
+              d={trazo(puntos)}
+              stroke="var(--color-oro-500)"
               strokeWidth="4"
               strokeLinecap="round"
-              strokeDasharray="3 16"
-              opacity="0.7"
+              strokeDasharray="2 14"
+              opacity="0.85"
             />
           </>
         )}
@@ -136,7 +142,10 @@ export function MapaSendero({
         <motion.div
           className="pointer-events-none absolute top-0 left-0 z-20"
           initial={false}
-          animate={{ x: posicionMapache.x - 36, y: posicionMapache.y - 92 }}
+          animate={{
+            x: posicionMapache.x + 26,
+            y: Math.max(posicionMapache.y - 56, 0),
+          }}
           transition={
             reduce ? { duration: 0 } : { type: "spring", stiffness: 90, damping: 16 }
           }
