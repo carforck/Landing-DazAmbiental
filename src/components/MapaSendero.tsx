@@ -85,7 +85,7 @@ export function MapaSendero({
           <>
             <path
               d={trazo(puntos)}
-              stroke="rgb(49 61 26 / 0.22)"
+              stroke="rgb(21 27 13 / 0.45)"
               strokeWidth="20"
               strokeLinecap="round"
             />
@@ -127,7 +127,7 @@ export function MapaSendero({
               </div>
               <span
                 className={`mt-3 max-w-[10rem] text-center font-mono text-[10px] leading-tight tracking-wide uppercase transition-colors duration-200 ${
-                  estado === "bloqueada" ? "text-selva-700/30" : "text-selva-700/70"
+                  estado === "bloqueada" ? "text-crema/30" : "text-crema/80"
                 }`}
               >
                 {pregunta.tema}
@@ -202,7 +202,7 @@ function Estacion({
   if (estado === "bloqueada") {
     return (
       <div
-        className={`${base} bg-white/70 text-selva-900/25 ring-1 ring-selva-900/8`}
+        className={`${base} bg-selva-950/55 text-crema/35 ring-1 ring-crema/12 backdrop-blur-sm`}
         aria-label={`Parada ${numero}, todavía sin abrir`}
       >
         {/* El número apagado dice más que un candado: se ve cuánto falta */}
