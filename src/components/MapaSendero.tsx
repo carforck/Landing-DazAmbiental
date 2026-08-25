@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { MapachePlush } from "@/components/MapachePlush";
-import { CATEGORIAS, PREGUNTAS, type Categoria } from "@/lib/mision";
+import type { Pregunta } from "@/lib/mision";
 
 interface Punto {
   x: number;
@@ -11,15 +11,19 @@ interface Punto {
 }
 
 /**
- * Mapa vertical serpenteante con las 15 estaciones agrupadas en 5 zonas.
- * El sendero se dibuja midiendo la posición real de cada estación, así que
- * sigue cuadrando cuando cambia el ancho o el tamaño de letra.
+ * Sendero vertical serpenteante con una estación por pregunta.
+ *
+ * El trazo se dibuja midiendo la posición real de cada estación, así que sigue
+ * cuadrando cuando cambia el ancho, el tamaño de letra o el número de paradas
+ * (que ahora depende del perfil del participante).
  */
 export function MapaSendero({
+  preguntas,
   indiceActual,
   frontera,
   onAbrirEstacion,
 }: {
+  preguntas: Pregunta[];
   indiceActual: number;
   /** Última parada desbloqueada: hasta ahí se puede tocar para volver. */
   frontera: number;
@@ -34,7 +38,7 @@ export function MapaSendero({
     const caja = contenedor.current?.getBoundingClientRect();
     if (!caja) return;
     setPuntos(
-      estaciones.current.map((el) => {
+      estaciones.current.slice(0, preguntas.length).map((el) => {
         if (!el) return { x: 0, y: 0 };
         const r = el.getBoundingClientRect();
         return {
@@ -43,7 +47,7 @@ export function MapaSendero({
         };
       }),
     );
-  }, []);
+  }, [preguntas.length]);
 
   useLayoutEffect(() => {
     medir();
@@ -59,10 +63,9 @@ export function MapaSendero({
     };
   }, [medir]);
 
-  // Lleva la estación actual al centro de la pantalla cuando avanza el mapache.
+  // Lleva la estación actual al centro cuando avanza el mapache.
   useEffect(() => {
-    const el = estaciones.current[indiceActual];
-    el?.scrollIntoView({
+    estaciones.current[indiceActual]?.scrollIntoView({
       behavior: reduce ? "auto" : "smooth",
       block: "center",
     });
@@ -71,8 +74,8 @@ export function MapaSendero({
   const posicionMapache = puntos[Math.min(indiceActual, puntos.length - 1)];
 
   return (
-    <div ref={contenedor} className="relative mx-auto w-full max-w-md px-4 pb-24">
-      {/* Sendero punteado, detrás de las estaciones */}
+    <div ref={contenedor} className="relative mx-auto w-full max-w-md px-4 pb-28">
+      {/* Sendero, detrás de las estaciones */}
       <svg
         aria-hidden
         className="pointer-events-none absolute inset-0 h-full w-full"
@@ -82,45 +85,47 @@ export function MapaSendero({
           <>
             <path
               d={trazo(puntos)}
-              stroke="var(--color-selva-700)"
-              strokeWidth="14"
+              stroke="rgb(32 42 21 / 0.10)"
+              strokeWidth="18"
               strokeLinecap="round"
             />
             <path
               d={trazo(puntos)}
-              stroke="var(--color-oro-500)"
-              strokeWidth="3"
+              stroke="var(--color-lima)"
+              strokeWidth="4"
               strokeLinecap="round"
-              strokeDasharray="2 14"
-              opacity="0.55"
+              strokeDasharray="3 16"
+              opacity="0.7"
             />
           </>
         )}
       </svg>
 
       <div className="relative">
-        {PREGUNTAS.map((pregunta, i) => {
-          const zona = CATEGORIAS.find((c) => c.id === pregunta.categoria);
-          const abreZona = zona?.preguntas[0] === pregunta.numero;
+        {preguntas.map((pregunta, i) => {
           const estado =
             i === indiceActual ? "actual" : i <= frontera ? "completada" : "bloqueada";
 
           return (
-            <div key={pregunta.numero}>
-              {abreZona && zona && <TituloZona zona={zona} activa={estado !== "bloqueada"} />}
-
-              <div
-                className="flex justify-center py-3"
-                style={{ transform: `translateX(${desvio(i)}px)` }}
-              >
-                <div ref={(el) => void (estaciones.current[i] = el)}>
-                  <Estacion
-                    numero={pregunta.numero}
-                    estado={estado}
-                    onClick={() => onAbrirEstacion(i)}
-                  />
-                </div>
+            <div
+              key={pregunta.numero}
+              className="flex flex-col items-center py-5"
+              style={{ transform: `translateX(${desvio(i)}px)` }}
+            >
+              <div ref={(el) => void (estaciones.current[i] = el)}>
+                <Estacion
+                  numero={pregunta.numero}
+                  estado={estado}
+                  onClick={() => onAbrirEstacion(i)}
+                />
               </div>
+              <span
+                className={`mt-3 max-w-[10rem] text-center font-mono text-[10px] leading-tight tracking-wide uppercase transition-colors duration-200 ${
+                  estado === "bloqueada" ? "text-selva-700/30" : "text-selva-700/70"
+                }`}
+              >
+                {pregunta.tema}
+              </span>
             </div>
           );
         })}
@@ -131,12 +136,12 @@ export function MapaSendero({
         <motion.div
           className="pointer-events-none absolute top-0 left-0 z-20"
           initial={false}
-          animate={{ x: posicionMapache.x - 34, y: posicionMapache.y - 88 }}
+          animate={{ x: posicionMapache.x - 36, y: posicionMapache.y - 92 }}
           transition={
             reduce ? { duration: 0 } : { type: "spring", stiffness: 90, damping: 16 }
           }
         >
-          <MapachePlush className="h-[68px] w-[68px]" pose="caminando" />
+          <MapachePlush className="h-[72px] w-[72px] drop-shadow-lg" pose="caminando" />
         </motion.div>
       )}
     </div>
@@ -145,7 +150,7 @@ export function MapaSendero({
 
 /** Serpenteo horizontal: suave, acotado y estable entre renders. */
 function desvio(i: number) {
-  return Math.round(Math.sin(i * 0.85) * 74);
+  return Math.round(Math.sin(i * 1.1) * 68);
 }
 
 /** Curva suave que une los centros medidos de las estaciones. */
@@ -160,22 +165,6 @@ function trazo(puntos: Punto[]) {
     .join(" ");
 }
 
-function TituloZona({ zona, activa }: { zona: Categoria; activa: boolean }) {
-  return (
-    <div className="relative z-10 flex justify-center pt-10 pb-2">
-      <span
-        className={`rounded-full px-4 py-1.5 font-mono text-[11px] font-bold tracking-[0.2em] uppercase transition duration-200 ${
-          activa
-            ? "bg-oro-500/15 text-oro-300 ring-1 ring-oro-500/30"
-            : "bg-selva-800/70 text-crema/30"
-        }`}
-      >
-        {zona.nombre}
-      </span>
-    </div>
-  );
-}
-
 function Estacion({
   numero,
   estado,
@@ -186,15 +175,15 @@ function Estacion({
   onClick: () => void;
 }) {
   const base =
-    "relative z-10 grid h-16 w-16 place-items-center rounded-full text-lg font-black transition duration-200";
+    "relative z-10 grid h-[70px] w-[70px] place-items-center rounded-full text-xl font-black transition duration-200";
 
   if (estado === "completada") {
     return (
       <button
         type="button"
         onClick={onClick}
-        className={`${base} cursor-pointer bg-oro-500 text-selva-950 shadow-lg shadow-oro-500/20 hover:bg-oro-400`}
-        aria-label={`Situación ${numero}, respondida. Volver a ella`}
+        className={`${base} cursor-pointer bg-lima text-selva-950 shadow-[0_10px_24px_-10px_rgba(143,191,63,0.9)] hover:bg-lima-claro`}
+        aria-label={`Parada ${numero}, respondida. Volver a ella`}
       >
         <span aria-hidden>✓</span>
       </button>
@@ -204,8 +193,8 @@ function Estacion({
   if (estado === "bloqueada") {
     return (
       <div
-        className={`${base} bg-selva-800 text-crema/25 ring-1 ring-crema/5`}
-        aria-label={`Situación ${numero}, todavía sin abrir`}
+        className={`${base} bg-white/70 text-selva-900/25 ring-1 ring-selva-900/8`}
+        aria-label={`Parada ${numero}, todavía sin abrir`}
       >
         {/* El número apagado dice más que un candado: se ve cuánto falta */}
         <span aria-hidden>{numero}</span>
@@ -217,10 +206,13 @@ function Estacion({
     <button
       type="button"
       onClick={onClick}
-      className={`${base} cursor-pointer bg-crema text-selva-900 shadow-xl shadow-oro-500/25 ring-4 ring-oro-400 hover:bg-white`}
-      aria-label={`Situación ${numero}, tu parada actual. Abrir`}
+      className={`${base} cursor-pointer bg-mango text-selva-950 shadow-[0_12px_30px_-8px_rgba(240,169,46,0.95)] ring-4 ring-mango/30 hover:bg-mango-claro`}
+      aria-label={`Parada ${numero}, tu parada actual. Abrir`}
     >
-      <span className="absolute -inset-2 animate-ping rounded-full bg-oro-400/20" aria-hidden />
+      <span
+        className="absolute -inset-1.5 animate-ping rounded-full bg-mango/25"
+        aria-hidden
+      />
       {numero}
     </button>
   );

@@ -7,17 +7,13 @@ import { MapachePlush } from "@/components/MapachePlush";
 import { Confetti } from "@/components/Confetti";
 import { sesion, useSesion } from "@/lib/sesion";
 import {
-  desglosePorCategoria,
+  cuestionarioDe,
+  desglosePorTema,
   MAXIMO,
   nivelPara,
-  PREGUNTAS,
+  preguntasDe,
   puntajeDe,
 } from "@/lib/mision";
-
-/*
-  Mismo lenguaje que la landing: sin iconos, titulares en Roboto 900 con
-  tracking negativo, etiquetas en mono y los numerales subiendo desde cero.
-*/
 
 export default function ResultadosPage() {
   const router = useRouter();
@@ -29,7 +25,7 @@ export default function ResultadosPage() {
     const p = actual.participante;
     const r = actual.respuestas;
 
-    if (!p || Object.keys(r).length < PREGUNTAS.length) {
+    if (!p || Object.keys(r).length < preguntasDe(p.rol).length) {
       router.replace(p ? "/mision" : "/registro");
       return;
     }
@@ -48,12 +44,15 @@ export default function ResultadosPage() {
     });
   }, [router]);
 
-  if (!participante || Object.keys(respuestas).length < PREGUNTAS.length) return null;
+  if (!participante) return null;
+  const preguntas = preguntasDe(participante.rol);
+  if (Object.keys(respuestas).length < preguntas.length) return null;
 
-  const puntaje = puntajeDe(respuestas);
+  const puntaje = puntajeDe(participante.rol, respuestas);
   const nivel = nivelPara(puntaje);
-  const desglose = desglosePorCategoria(respuestas);
-  const esBuenResultado = puntaje >= 9;
+  const desglose = desglosePorTema(participante.rol, respuestas);
+  const cuestionario = cuestionarioDe(participante.rol);
+  const esBuenResultado = puntaje >= 6;
 
   function reiniciar() {
     sesion.limpiar();
@@ -61,7 +60,7 @@ export default function ResultadosPage() {
   }
 
   return (
-    <main className="fondo-selva min-h-dvh bg-selva-950 px-6 py-12 sm:px-10">
+    <main className="escenario-vivo relative min-h-dvh overflow-hidden bg-crema px-6 py-12 sm:px-10">
       {esBuenResultado && <Confetti />}
 
       <div className="relative z-10 mx-auto max-w-2xl">
@@ -69,67 +68,66 @@ export default function ResultadosPage() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
+          className="rounded-3xl bg-white/80 p-7 shadow-[0_20px_60px_-30px_rgba(21,27,13,0.5)] ring-1 ring-selva-900/5 backdrop-blur-sm sm:p-10"
         >
           <MapachePlush
-            className="h-32 w-32"
+            className="h-28 w-28"
             pose={esBuenResultado ? "celebrando" : "reposo"}
           />
 
-          <p className="mt-6 font-mono text-[11px] font-bold tracking-[0.3em] text-oro-400 uppercase">
+          <p className="mt-5 font-mono text-[11px] font-bold tracking-[0.28em] text-oro-600 uppercase">
             {participante.nombre.split(" ")[0]}, misión cumplida
           </p>
 
-          <h1 className="titular mt-5 text-5xl text-crema sm:text-6xl">
+          <h1 className="titular mt-4 text-4xl text-selva-900 sm:text-5xl">
             {nivel.nombre}
-            <span className="text-oro-400">.</span>
+            <span className="text-mango">.</span>
           </h1>
 
-          <p className="mt-6 max-w-lg text-lg leading-relaxed text-crema/70">
+          <p className="mt-5 text-lg leading-relaxed text-selva-700/85">
             {nivel.mensaje}
           </p>
+
+          {/* Puntaje: el numeral es la pieza grande, no un texto más */}
+          <div className="mt-8 flex items-baseline gap-4">
+            <span className="titular text-[4.5rem] text-lima tabular-nums sm:text-[5.5rem]">
+              <Cuenta hasta={puntaje} />
+            </span>
+            <span className="font-mono text-lg text-selva-700/40">de {MAXIMO}</span>
+          </div>
         </motion.div>
 
-        {/* Puntaje: el numeral es la pieza grande, no un texto más */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="mt-12 flex items-baseline gap-4"
-        >
-          <span className="titular text-[5.5rem] text-oro-400 tabular-nums sm:text-[7rem]">
-            <Cuenta hasta={puntaje} />
-          </span>
-          <span className="font-mono text-lg text-crema/35">de {MAXIMO}</span>
-        </motion.div>
-
-        <section className="mt-16">
-          <p className="font-mono text-[11px] tracking-[0.24em] text-crema/45 uppercase">
-            Cómo te fue en cada parada
+        <section className="mt-10">
+          <p className="font-mono text-[11px] tracking-[0.24em] text-selva-700/50 uppercase">
+            Tema por tema · {cuestionario.nombre}
           </p>
 
-          <div className="mt-8 space-y-7">
-            {desglose.map(({ categoria, aciertos, total }, i) => (
+          <div className="mt-5 space-y-3">
+            {desglose.map(({ pregunta, acerto }, i) => (
               <motion.div
-                key={categoria.id}
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.45 + i * 0.08, duration: 0.5 }}
+                key={pregunta.numero}
+                initial={{ opacity: 0, x: -14 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.35 + i * 0.09, duration: 0.45 }}
+                className={`flex items-center gap-4 rounded-2xl border-2 bg-white/70 p-4 ${
+                  acerto ? "border-lima/50" : "border-coral/40"
+                }`}
               >
-                <div className="flex items-baseline justify-between gap-4">
-                  <h2 className="text-lg font-black tracking-tight text-crema">
-                    {categoria.nombre}
-                  </h2>
-                  <span className="font-mono text-sm text-oro-300 tabular-nums">
-                    <Cuenta hasta={aciertos} /> / {total}
-                  </span>
-                </div>
-                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-selva-800">
-                  <motion.div
-                    className="h-full rounded-full bg-oro-500"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${(aciertos / total) * 100}%` }}
-                    transition={{ delay: 0.6 + i * 0.08, duration: 0.7, ease: "easeOut" }}
-                  />
+                <span
+                  className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl text-lg font-black ${
+                    acerto ? "bg-lima text-selva-950" : "bg-coral/20 text-coral"
+                  }`}
+                  aria-hidden
+                >
+                  {acerto ? "✓" : "·"}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-bold tracking-tight text-selva-900">
+                    {pregunta.tema}
+                  </p>
+                  <p className="font-mono text-[11px] text-selva-700/50">
+                    {acerto ? "Práctica adecuada" : "Vale la pena reforzarlo"}
+                  </p>
                 </div>
               </motion.div>
             ))}
@@ -140,14 +138,14 @@ export default function ResultadosPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.9 }}
-          className="mt-16"
+          className="mt-12 rounded-3xl bg-selva-700 p-7 sm:p-9"
         >
-          <p className="text-lg leading-relaxed text-crema/70">
+          <p className="text-lg leading-relaxed text-crema/85">
             Convivir con los mapaches no es alejarlos: es no darles motivos para
-            depender de nosotros. Una caneca bien cerrada o una foto tomada de lejos
-            son las decisiones que los mantienen silvestres.
+            depender de nosotros. Una caneca bien cerrada o una foto tomada de
+            lejos son las decisiones que los mantienen silvestres.
           </p>
-          <p className="titular mt-8 text-2xl text-oro-400 sm:text-3xl">
+          <p className="titular mt-7 text-2xl text-oro-300 sm:text-3xl">
             Protegemos su naturaleza,
             <br />
             respetamos su espacio.
@@ -157,10 +155,17 @@ export default function ResultadosPage() {
         <button
           type="button"
           onClick={reiniciar}
-          className="mt-14 cursor-pointer rounded-full border border-crema/15 px-6 py-3 font-mono text-xs tracking-[0.16em] text-crema/55 uppercase transition-colors duration-200 hover:border-oro-500 hover:text-oro-300"
+          className="mt-10 cursor-pointer rounded-full bg-white/70 px-6 py-3 font-mono text-xs tracking-[0.16em] text-selva-700 uppercase shadow-sm transition-colors duration-200 hover:bg-white"
         >
           Que juegue otra persona
         </button>
+
+        <footer className="mt-10 border-t border-selva-900/10 pt-6 text-center">
+          <p className="font-mono text-[11px] tracking-wide text-selva-700/45">
+            © {new Date().getFullYear()} DAZ Ambiental. Todos los derechos
+            reservados.
+          </p>
+        </footer>
       </div>
     </main>
   );

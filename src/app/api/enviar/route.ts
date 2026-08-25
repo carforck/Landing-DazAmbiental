@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import {
-  desglosePorCategoria,
+  cuestionarioDe,
+  desglosePorTema,
   MAXIMO,
   nivelPara,
   puntajeDe,
@@ -13,7 +14,7 @@ import {
  * el servidor (GOOGLE_SHEETS_WEBHOOK_URL) para que no quede expuesta en el
  * bundle del navegador.
  *
- * El orden de las columnas que se envían es el que verá el Sheet.
+ * El orden de las claves que se envían es el de las columnas del Sheet.
  */
 export async function POST(request: Request) {
   let cuerpo: { participante?: Participante; respuestas?: Respuestas };
@@ -33,29 +34,32 @@ export async function POST(request: Request) {
     );
   }
 
-  const puntaje = puntajeDe(respuestas ?? {});
+  const rol = participante.rol;
+  const puntaje = puntajeDe(rol, respuestas ?? {});
   const nivel = nivelPara(puntaje);
-  const desglose = desglosePorCategoria(respuestas ?? {});
+  const desglose = desglosePorTema(rol, respuestas ?? {});
 
   const fila: Record<string, string | number> = {
     "Fecha y hora": new Date().toISOString(),
     "Nombre completo": participante.nombre,
     "Número de contacto": participante.telefono,
-    Perfil: participante.rol,
+    Perfil: rol,
+    Cuestionario: cuestionarioDe(rol).nombre,
     Puntaje: puntaje,
     "Máximo": MAXIMO,
     Nivel: nivel.nombre,
+    Interpretación: nivel.interpretacion,
     "Autorización habeas data": "Sí",
   };
 
-  // Una columna por categoría, con el mismo nombre que ve el cliente.
-  desglose.forEach(({ categoria, aciertos, total }) => {
-    fila[categoria.nombre] = `${aciertos}/${total}`;
-  });
-
-  // Una columna por pregunta, para que puedan analizar respuesta por respuesta.
-  Object.entries(respuestas ?? {}).forEach(([numero, letra]) => {
-    fila[`P${numero}`] = letra;
+  /*
+    Una columna por pregunta con la letra elegida y otra con el acierto. Los
+    tres perfiles responden cuestionarios distintos, así que el encabezado lleva
+    el tema: sin él, "P1" significaría cosas diferentes según quién respondió.
+  */
+  desglose.forEach(({ pregunta, elegida, acerto }) => {
+    fila[`P${pregunta.numero} · ${pregunta.tema}`] = elegida ?? "";
+    fila[`P${pregunta.numero} acierto`] = acerto ? "Sí" : "No";
   });
 
   const webhook = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
@@ -91,12 +95,12 @@ export async function POST(request: Request) {
       código HTTP, un token mal configurado se vería como éxito y los
       resultados del cliente desaparecerían sin que nadie se entere.
     */
-    const cuerpo = await respuesta.text();
+    const texto = await respuesta.text();
     let confirmacion: { ok?: boolean; motivo?: string } = {};
     try {
-      confirmacion = JSON.parse(cuerpo);
+      confirmacion = JSON.parse(texto);
     } catch {
-      console.error("[enviar] el webhook no devolvió JSON:", cuerpo.slice(0, 200));
+      console.error("[enviar] el webhook no devolvió JSON:", texto.slice(0, 200));
       return NextResponse.json({ ok: false, motivo: "webhook-sin-json" }, { status: 502 });
     }
 

@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { Lottie } from "lottie-react";
 import { RastroHuellas } from "@/components/RastroHuellas";
 import { sesion } from "@/lib/sesion";
-import { PREGUNTAS, ROLES, type Rol } from "@/lib/mision";
+import { ROLES, TOTAL_PREGUNTAS, type Rol } from "@/lib/mision";
 import { PAISES, PAIS_POR_DEFECTO, bandera } from "@/lib/paises";
 
 /*
@@ -82,7 +82,7 @@ export default function RegistroPage() {
             ¿Quién <span className="text-oro-600">juega?</span>
           </h1>
           <p className="mt-5 max-w-md leading-relaxed text-selva-700/80">
-            Cuéntanos quién eres y salimos al sendero. Son {PREGUNTAS.length} paradas
+            Cuéntanos quién eres y salimos al sendero. Son {TOTAL_PREGUNTAS} paradas
             y unos cinco minutos.
           </p>
 

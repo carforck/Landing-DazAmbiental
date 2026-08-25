@@ -3,9 +3,9 @@
 Diagnóstico web gamificado sobre convivencia con fauna silvestre para el
 personal de un resort en Barú. Cliente: **DAZ Ambiental**.
 
-El participante recorre un sendero de 15 paradas, en cada una elige qué haría
-ante una situación real con mapaches, y al final recibe un puntaje, un nivel y
-un desglose por tema. Los resultados se consolidan solos en un Google Sheets del
+Cada perfil (empleado, huésped o comunidad) recorre su propio sendero de cinco
+paradas, en cada una elige qué haría ante una situación real con mapaches, y al
+final recibe un puntaje, un nivel y un desglose tema por tema. Los resultados se consolidan solos en un Google Sheets del
 cliente.
 
 Mobile-first: el personal responde desde su propio celular.
@@ -30,7 +30,7 @@ Para conectar el Google Sheet del cliente, sigue
 |---|---|
 | `/` | Landing |
 | `/registro` | Datos del participante y autorización de habeas data |
-| `/mision` | Sendero de 15 paradas con las situaciones |
+| `/mision` | Sendero de cinco paradas con las situaciones del perfil |
 | `/resultados` | Puntaje, nivel y desglose por categoría |
 | `/api/enviar` | Puente al webhook del Sheet del cliente |
 | `/mascota` | Interna: validación del diseño de la mascota |
@@ -52,7 +52,7 @@ src/
 │   └── api/enviar/route.ts   webhook → Google Sheets
 ├── components/
 │   ├── MapachePlush.tsx      la mascota (reposo | caminando | celebrando)
-│   ├── MapaSendero.tsx       sendero de 15 estaciones, trazo medido
+│   ├── MapaSendero.tsx       sendero de estaciones, trazo medido
 │   ├── PanelPregunta.tsx     situación con 4 opciones y navegación
 │   ├── HeroMedia.tsx         video del hero con póster
 │   ├── FondoVideo.tsx        video de fondo reutilizable
@@ -70,9 +70,10 @@ src/
 revisa la redacción y debe poder cambiarla sin re-desarrollo. Es requisito
 contractual, no una comodidad.
 
-**La letra correcta va repartida entre A, B, C y D** (hoy A·4 B·3 C·4 D·4).
-Petición explícita del cliente para que el juego no sea predecible: no barajar
-opciones al azar sin preservar esa distribución.
+**Cada perfil tiene su propio cuestionario.** Un empleado responde sobre los
+protocolos de su turno y un huésped sobre su estadía: las preguntas no se
+comparten. Las claves de `cuestionarios` en el JSON son exactamente los nombres
+de los roles.
 
 **Nunca se revela la respuesta correcta durante el recorrido.** El feedback al
 elegir es puramente visual y neutro; el resultado se resuelve al final. Un
@@ -111,14 +112,18 @@ Toda animación respeta `prefers-reduced-motion`.
 
 ## Contenido
 
-15 situaciones en 4 opciones, agrupadas en 5 categorías, un punto por acierto
-sobre un máximo de 15. Cuatro niveles de resultado: **Guardián de la Fauna**
-(13-15), **Aliado en Proceso** (9-12), **Observador Imprudente** (5-8) y
-**Agente de Riesgo** (0-4).
+Tres cuestionarios de cinco situaciones cada uno, en cuatro opciones. Dos puntos
+por acierto sobre un máximo de 10. Cuatro niveles: **Convivencia responsable**
+(9-10), **Conocimiento en desarrollo** (6-8), **Prácticas de riesgo** (3-5) e
+**Intervención prioritaria** (0-2).
+
+El documento del cliente contempla además 1 punto por respuesta *parcialmente
+adecuada*, pero solo marca cuál es la correcta. Hasta que indique qué opciones
+valen 1 punto, la puntuación es binaria.
 
 ## Pendientes del cliente
 
-- [ ] Confirmación final de las 15 preguntas (siguen en revisión)
+- [ ] Qué opciones valen 1 punto (respuesta parcialmente adecuada)
 - [ ] Datos de contacto reales para la landing
 - [ ] Material propio del resort para reemplazar el metraje del hero
 - [ ] Aprobación del diseño del sendero

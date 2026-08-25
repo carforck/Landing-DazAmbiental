@@ -2,18 +2,30 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { LETRAS, categoriaDe, type Letra, type Pregunta } from "@/lib/mision";
+import { MapachePlush } from "@/components/MapachePlush";
+import { LETRAS, type Letra, type Pregunta } from "@/lib/mision";
 
 /**
- * Pregunta a pantalla completa sobre el mapa.
+ * Pregunta a pantalla completa.
  *
  * Por pedido del cliente el feedback al elegir es puramente visual: nunca
- * revela si acertó o no.
+ * revela si acertó o no. Por eso las cuatro opciones tienen colores distintos
+ * pero ninguno significa bien o mal; el color solo las separa y le da energía a
+ * la pantalla.
  *
  * Se puede volver atrás y cambiar una respuesta ya dada. `respuestaPrevia` deja
  * marcada la que eligió antes, así el participante ve qué había contestado en
  * vez de encontrarse la pregunta en blanco.
  */
+
+/** Un color por letra. Neutros entre sí: ninguno insinúa acierto. */
+const TONOS: Record<Letra, { fondo: string; texto: string; borde: string; suave: string }> = {
+  A: { fondo: "bg-lima", texto: "text-selva-950", borde: "border-lima", suave: "bg-lima/10" },
+  B: { fondo: "bg-agua", texto: "text-selva-950", borde: "border-agua", suave: "bg-agua/10" },
+  C: { fondo: "bg-mango", texto: "text-selva-950", borde: "border-mango", suave: "bg-mango/10" },
+  D: { fondo: "bg-coral", texto: "text-crema", borde: "border-coral", suave: "bg-coral/10" },
+};
+
 export function PanelPregunta({
   pregunta,
   posicion,
@@ -39,7 +51,7 @@ export function PanelPregunta({
 }) {
   const [elegida, setElegida] = useState<Letra | null>(respuestaPrevia ?? null);
   const [bloqueado, setBloqueado] = useState(false);
-  const categoria = categoriaDe(pregunta);
+  const avance = (posicion / total) * 100;
 
   useEffect(() => {
     const alPresionar = (e: KeyboardEvent) => {
@@ -55,8 +67,8 @@ export function PanelPregunta({
     if (bloqueado) return;
     setElegida(letra);
     setBloqueado(true);
-    // Deja ver la selección antes de que el mapache avance.
-    window.setTimeout(() => onResponder(letra), 620);
+    // Deja ver la selección antes de avanzar.
+    window.setTimeout(() => onResponder(letra), 680);
   }
 
   return (
@@ -64,76 +76,93 @@ export function PanelPregunta({
       role="dialog"
       aria-modal="true"
       aria-label={`Situación ${posicion} de ${total}`}
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 40 }}
-      transition={{ duration: 0.28, ease: "easeOut" }}
-      className="fondo-selva fixed inset-0 z-50 overflow-y-auto bg-selva-950"
+      exit={{ opacity: 0, y: 30 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="escenario-vivo fixed inset-0 z-50 overflow-y-auto bg-crema"
     >
-      <div className="mx-auto flex min-h-dvh max-w-2xl flex-col px-5 py-6 sm:px-8">
+      <div className="relative mx-auto flex min-h-dvh max-w-2xl flex-col px-5 py-6 sm:px-8">
+        {/* ── Progreso ── */}
         <div className="flex items-center gap-4">
-          <div className="h-2 flex-1 overflow-hidden rounded-full bg-selva-800">
+          <div className="relative h-4 flex-1 overflow-hidden rounded-full bg-selva-900/10 inset-shadow-sm">
             <motion.div
-              className="h-full rounded-full bg-oro-500"
+              className="barra-relleno relative h-full overflow-hidden rounded-full"
               initial={false}
-              animate={{ width: `${(posicion / total) * 100}%` }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
+              animate={{ width: `${avance}%` }}
+              transition={{ type: "spring", stiffness: 120, damping: 18 }}
             />
+            {/* El mapache va montado en la punta de la barra */}
+            <motion.div
+              className="pointer-events-none absolute -top-3 z-10"
+              initial={false}
+              animate={{ left: `calc(${avance}% - 20px)` }}
+              transition={{ type: "spring", stiffness: 120, damping: 18 }}
+            >
+              <MapachePlush className="h-10 w-10 drop-shadow" pose="caminando" />
+            </motion.div>
           </div>
-          <span className="font-mono text-sm text-crema/50 tabular-nums">
+
+          <span className="shrink-0 rounded-full bg-selva-700 px-3 py-1 font-mono text-xs font-bold text-crema tabular-nums">
             {posicion}/{total}
           </span>
           <button
             type="button"
             onClick={onCerrar}
-            className="cursor-pointer font-mono text-[11px] tracking-[0.16em] text-crema/40 uppercase transition-colors duration-200 hover:text-oro-300"
+            className="shrink-0 cursor-pointer font-mono text-[11px] tracking-[0.16em] text-selva-700/50 uppercase transition-colors duration-200 hover:text-selva-900"
           >
             Mapa
           </button>
         </div>
 
+        {/* ── Pregunta ── */}
         <div className="flex flex-1 flex-col justify-center py-8">
-          {categoria && (
-            <span className="font-mono text-[11px] font-bold tracking-[0.28em] text-oro-400 uppercase">
-              {categoria.nombre}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="rounded-3xl bg-white/80 p-6 shadow-[0_18px_50px_-24px_rgba(21,27,13,0.45)] ring-1 ring-selva-900/5 backdrop-blur-sm sm:p-8"
+          >
+            <span className="inline-block rounded-full bg-selva-700 px-3.5 py-1.5 font-mono text-[10px] font-bold tracking-[0.2em] text-oro-300 uppercase">
+              Parada {posicion} · {pregunta.tema}
             </span>
-          )}
-          <h1 className="titular mt-4 text-3xl text-crema sm:text-4xl">
-            {pregunta.titulo}
-          </h1>
-          <p className="mt-5 text-lg leading-relaxed text-crema/75">
-            {pregunta.escenario}
-          </p>
+            <p className="mt-5 text-xl leading-snug font-black tracking-tight text-selva-900 sm:text-2xl">
+              {pregunta.escenario}
+            </p>
+          </motion.div>
 
-          <div className="mt-8 space-y-3">
+          {/* ── Opciones ── */}
+          <div className="mt-6 space-y-3">
             {LETRAS.map((letra, i) => {
+              const tono = TONOS[letra];
               const seleccionada = elegida === letra;
               const atenuada = elegida !== null && !seleccionada;
+
               return (
                 <motion.button
                   key={letra}
                   type="button"
                   onClick={() => elegir(letra)}
                   disabled={bloqueado}
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: atenuada ? 0.4 : 1, y: 0 }}
-                  transition={{ delay: bloqueado ? 0 : 0.06 * i, duration: 0.3 }}
-                  className={`flex w-full cursor-pointer items-start gap-4 rounded-2xl border p-4 text-left transition-colors duration-200 disabled:cursor-default ${
+                  initial={{ opacity: 0, x: -18 }}
+                  animate={{ opacity: atenuada ? 0.35 : 1, x: 0 }}
+                  transition={{
+                    delay: bloqueado ? 0 : 0.08 + 0.07 * i,
+                    duration: 0.35,
+                    ease: "easeOut",
+                  }}
+                  className={`opcion ${seleccionada ? "opcion-elegida" : ""} flex w-full cursor-pointer items-center gap-4 rounded-2xl border-2 p-3.5 text-left disabled:cursor-default sm:p-4 ${
                     seleccionada
-                      ? "border-oro-400 bg-oro-500/15"
-                      : "border-crema/12 bg-selva-900/60 hover:border-crema/30 hover:bg-selva-900"
+                      ? `${tono.borde} ${tono.suave} shadow-[0_14px_34px_-18px_rgba(21,27,13,0.5)]`
+                      : "border-selva-900/8 bg-white/75 hover:border-selva-900/20 hover:shadow-[0_14px_34px_-20px_rgba(21,27,13,0.45)]"
                   }`}
                 >
                   <span
-                    className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg font-bold transition-colors duration-200 ${
-                      seleccionada
-                        ? "bg-oro-500 text-selva-950"
-                        : "bg-selva-800 font-mono text-oro-300"
-                    }`}
+                    className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl font-mono text-lg font-bold shadow-sm ${tono.fondo} ${tono.texto}`}
                   >
                     {letra}
                   </span>
-                  <span className="pt-1 leading-relaxed text-crema/90">
+                  <span className="leading-snug font-medium text-selva-900">
                     {pregunta.opciones[letra]}
                   </span>
                 </motion.button>
@@ -142,31 +171,31 @@ export function PanelPregunta({
           </div>
 
           {respuestaPrevia && !bloqueado && (
-            <p className="mt-5 font-mono text-[11px] text-crema/40">
+            <p className="mt-5 text-center font-mono text-[11px] text-selva-700/50">
               Ya respondiste esta parada. Puedes cambiar tu elección.
             </p>
           )}
 
-          {/* Navegación: se puede revisar lo ya contestado sin perder nada */}
-          <div className="mt-8 flex items-center justify-between gap-4 border-t border-crema/10 pt-6">
+          {/* ── Navegación ── */}
+          <div className="mt-8 flex items-center justify-between gap-4">
             <button
               type="button"
               onClick={onAnterior}
               disabled={!puedeAnterior}
-              className="cursor-pointer font-mono text-xs tracking-[0.16em] text-crema/55 uppercase transition-colors duration-200 hover:text-oro-300 disabled:cursor-not-allowed disabled:text-crema/15"
+              className="cursor-pointer rounded-full bg-white/70 px-4 py-2.5 font-mono text-xs tracking-[0.14em] text-selva-700 uppercase shadow-sm transition-colors duration-200 hover:bg-white disabled:cursor-not-allowed disabled:opacity-30"
             >
               ← Anterior
             </button>
 
-            <p className="text-center text-xs text-crema/35">
-              Aquí nadie pierde. Al final ves tu resultado.
+            <p className="text-center text-xs font-medium text-selva-700/50">
+              Aquí nadie pierde
             </p>
 
             <button
               type="button"
               onClick={onSiguiente}
               disabled={!puedeSiguiente}
-              className="cursor-pointer font-mono text-xs tracking-[0.16em] text-crema/55 uppercase transition-colors duration-200 hover:text-oro-300 disabled:cursor-not-allowed disabled:text-crema/15"
+              className="cursor-pointer rounded-full bg-white/70 px-4 py-2.5 font-mono text-xs tracking-[0.14em] text-selva-700 uppercase shadow-sm transition-colors duration-200 hover:bg-white disabled:cursor-not-allowed disabled:opacity-30"
             >
               Siguiente →
             </button>

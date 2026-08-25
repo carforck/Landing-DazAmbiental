@@ -23,6 +23,21 @@
   --color-crema: #faf7ee;
   --color-crema-200: #efe8d6;
 
+  /*
+    Acentos del juego. Salen de la misma naturaleza del sendero (hoja nueva,
+    agua, atardecer, fruta) para que suban la energía sin pelearse con el oliva
+    y el dorado de la marca. Se usan para distinguir las cuatro opciones y para
+    el fondo vivo de la pantalla de preguntas.
+  */
+  --color-lima: #8fbf3f;
+  --color-lima-claro: #b7db72;
+  --color-agua: #3fb8a0;
+  --color-agua-claro: #7fd4c3;
+  --color-coral: #e8734a;
+  --color-coral-claro: #f2a186;
+  --color-mango: #f0a92e;
+  --color-mango-claro: #f7c977;
+
   --font-display: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-roboto-mono), ui-monospace, monospace;
@@ -361,5 +376,142 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+
+/*
+  ─────────── Pantalla de preguntas ───────────
+
+  Es la pantalla donde el participante pasa el 90% del tiempo, así que aquí se
+  concentra el efecto de juego: fondo claro y vivo, tarjetas que entran, y una
+  barra de progreso que se siente como avanzar.
+*/
+
+/* Manchas de color que respiran detrás del contenido */
+.escenario-vivo::before,
+.escenario-vivo::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+}
+
+.escenario-vivo::before {
+  inset: -18% 40% 55% -18%;
+  background: radial-gradient(circle, rgb(143 191 63 / 0.5), transparent 68%);
+}
+
+.escenario-vivo::after {
+  inset: 45% -20% -20% 42%;
+  background: radial-gradient(circle, rgb(63 184 160 / 0.42), transparent 68%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .escenario-vivo::before {
+    animation: flotar-a 17s ease-in-out infinite alternate;
+  }
+  .escenario-vivo::after {
+    animation: flotar-b 21s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes flotar-a {
+  to {
+    transform: translate3d(8%, 6%, 0) scale(1.18);
+  }
+}
+
+@keyframes flotar-b {
+  to {
+    transform: translate3d(-9%, -5%, 0) scale(1.14);
+  }
+}
+
+/*
+  Barra de progreso. El relleno lleva un degradado que viaja y un brillo que lo
+  recorre: sin movimiento propio, una barra que solo crece se lee como espera y
+  no como avance.
+*/
+.barra-relleno {
+  background-image: linear-gradient(
+    90deg,
+    var(--color-lima),
+    var(--color-agua),
+    var(--color-mango),
+    var(--color-lima)
+  );
+  background-size: 300% 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .barra-relleno {
+    animation: viajar 6s linear infinite;
+  }
+
+  .barra-relleno::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      transparent 20%,
+      rgb(255 255 255 / 0.55) 50%,
+      transparent 80%
+    );
+    animation: destello 2.6s ease-in-out infinite;
+  }
+}
+
+@keyframes viajar {
+  to {
+    background-position: 300% 0;
+  }
+}
+
+@keyframes destello {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(220%);
+  }
+}
+
+/* Cada opción se levanta al pasar el dedo o el cursor */
+.opcion {
+  transition:
+    transform 180ms cubic-bezier(0.34, 1.4, 0.5, 1),
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+
+@media (hover: hover) {
+  .opcion:hover:not(:disabled) {
+    transform: translateY(-3px);
+  }
+}
+
+.opcion:active:not(:disabled) {
+  transform: scale(0.985);
+}
+
+/* Latido de la opción elegida, justo antes de avanzar */
+@media (prefers-reduced-motion: no-preference) {
+  .opcion-elegida {
+    animation: elegida 620ms cubic-bezier(0.34, 1.4, 0.5, 1);
+  }
+}
+
+@keyframes elegida {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.035);
+  }
+  100% {
+    transform: scale(1);
   }
 }

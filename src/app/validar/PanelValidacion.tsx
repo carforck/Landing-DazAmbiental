@@ -6,9 +6,13 @@ import { Eraser, ExternalLink, Play, Trophy } from "lucide-react";
 import { sesion, useSesion } from "@/lib/sesion";
 import {
   LETRAS,
+  MAXIMO,
   NIVELES,
-  PREGUNTAS,
+  PUNTOS_POR_ACIERTO,
+  ROLES,
+  cuestionarioDe,
   nivelPara,
+  preguntasDe,
   type Letra,
   type Respuestas,
   type Rol,
@@ -17,7 +21,7 @@ import {
 const PARTICIPANTE = {
   nombre: "Zulay Pérez (prueba)",
   telefono: "+57 3001234567",
-  rol: "Colaborador/a" as Rol,
+  rol: ROLES[0] as Rol,
   autoriza: true as const,
 };
 
@@ -26,14 +30,20 @@ const PARTICIPANTE = {
  * Las incorrectas toman la primera letra que no sea la buena, para que el
  * puntaje sea predecible y la validación repetible.
  */
-function respuestasCon(aciertos: number, cuantas = PREGUNTAS.length): Respuestas {
+function respuestasCon(
+  rol: Rol,
+  aciertos: number,
+  cuantas = preguntasDe(rol).length,
+): Respuestas {
   const respuestas: Respuestas = {};
-  PREGUNTAS.slice(0, cuantas).forEach((pregunta, i) => {
-    respuestas[pregunta.numero] =
-      i < aciertos
-        ? pregunta.correcta
-        : (LETRAS.find((l) => l !== pregunta.correcta) as Letra);
-  });
+  preguntasDe(rol)
+    .slice(0, cuantas)
+    .forEach((pregunta, i) => {
+      respuestas[pregunta.numero] =
+        i < aciertos
+          ? pregunta.correcta
+          : (LETRAS.find((l) => l !== pregunta.correcta) as Letra);
+    });
   return respuestas;
 }
 
@@ -44,13 +54,15 @@ export function PanelValidacion() {
 
   function irAlSendero(respondidasPrevias: number) {
     sesion.guardarParticipante(PARTICIPANTE);
-    sesion.guardarRespuestas(respuestasCon(respondidasPrevias, respondidasPrevias));
+    sesion.guardarRespuestas(
+      respuestasCon(PARTICIPANTE.rol, respondidasPrevias, respondidasPrevias),
+    );
     router.push("/mision");
   }
 
   function irAResultados(aciertos: number) {
     sesion.guardarParticipante(PARTICIPANTE);
-    sesion.guardarRespuestas(respuestasCon(aciertos));
+    sesion.guardarRespuestas(respuestasCon(PARTICIPANTE.rol, aciertos));
     router.push("/resultados");
   }
 
@@ -64,7 +76,7 @@ export function PanelValidacion() {
           Panel de validación
         </h1>
         <p className="mt-2 text-crema/60">
-          Atajos para ver cualquier pantalla sin recorrer las {PREGUNTAS.length}{" "}
+          Atajos para ver cualquier pantalla sin recorrer las {preguntasDe(PARTICIPANTE.rol).length}{" "}
           situaciones. Esta ruta no existe en producción.
         </p>
 
@@ -73,7 +85,7 @@ export function PanelValidacion() {
             {participante ? (
               <>
                 <span className="text-crema">{participante.nombre}</span> ·{" "}
-                {participante.rol} · {respondidas}/{PREGUNTAS.length} respondidas
+                {participante.rol} · {respondidas}/{preguntasDe(PARTICIPANTE.rol).length} respondidas
               </>
             ) : (
               "Sin sesión iniciada."
@@ -95,7 +107,7 @@ export function PanelValidacion() {
           </p>
           <div className="grid gap-3 sm:grid-cols-2">
             {NIVELES.map((nivel) => {
-              const aciertos = nivel.max;
+              const aciertos = Math.ceil(nivel.max / PUNTOS_POR_ACIERTO);
               return (
                 <button
                   key={nivel.nombre}
@@ -108,7 +120,7 @@ export function PanelValidacion() {
                     {nivel.nombre}
                   </span>
                   <span className="mt-1 block text-sm text-crema/50">
-                    {aciertos}/{PREGUNTAS.length} aciertos · {nivel.porcentaje}
+                    {nivel.min}-{nivel.max} de {MAXIMO} puntos · {nivel.porcentaje}
                   </span>
                 </button>
               );
@@ -122,7 +134,7 @@ export function PanelValidacion() {
             cómo entra cada zona nueva.
           </p>
           <div className="flex flex-wrap gap-2">
-            {[0, 2, 5, 8, 11, 14].map((n) => (
+            {[0, 1, 2, 3, 4].map((n) => (
               <button
                 key={n}
                 type="button"
@@ -165,13 +177,13 @@ export function PanelValidacion() {
         <Bloque titulo="Comprobaciones de contenido">
           <ul className="space-y-2 text-sm text-crema/70">
             <li>
-              · {PREGUNTAS.length} situaciones cargadas desde{" "}
+              · Cuestionarios por perfil cargados desde{" "}
               <code className="text-oro-300">config/preguntas.json</code>
             </li>
-            <li>· Distribución de la letra correcta: {distribucion()}</li>
+            <li>· {distribucion()}</li>
             <li>
-              · Puntaje máximo {PREGUNTAS.length} → nivel{" "}
-              <span className="text-crema">{nivelPara(PREGUNTAS.length).nombre}</span>
+              · Puntaje máximo {MAXIMO} → nivel{" "}
+              <span className="text-crema">{nivelPara(MAXIMO).nombre}</span>
             </li>
             <li>
               · Puntaje 0 → nivel{" "}
@@ -186,10 +198,13 @@ export function PanelValidacion() {
 
 /** El cliente pidió que la correcta no siempre caiga en la misma letra. */
 function distribucion() {
-  const conteo = LETRAS.map(
-    (letra) => `${letra}: ${PREGUNTAS.filter((p) => p.correcta === letra).length}`,
-  );
-  return conteo.join(" · ");
+  return ROLES.map((rol) => {
+    const preguntas = preguntasDe(rol);
+    const conteo = LETRAS.map(
+      (letra) => `${letra}${preguntas.filter((p) => p.correcta === letra).length}`,
+    ).join(" ");
+    return `${cuestionarioDe(rol).nombre}: ${conteo}`;
+  }).join(" · ");
 }
 
 function Bloque({ titulo, children }: { titulo: string; children: React.ReactNode }) {

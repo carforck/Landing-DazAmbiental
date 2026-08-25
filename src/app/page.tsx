@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { animate, motion, useInView, useReducedMotion } from "framer-motion";
 import { HeroMedia } from "@/components/HeroMedia";
-import config from "@/config/preguntas.json";
+import { ROLES, TOTAL_PREGUNTAS, cuestionarioDe } from "@/lib/mision";
 
 /*
   Landing tipográfica. Deliberadamente sin iconos, sin viñetas y sin tarjetas
@@ -239,7 +239,7 @@ function Hero() {
           transition={{ delay: 0.28, duration: 0.7 }}
           className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-crema/75 drop-shadow-[0_2px_18px_rgba(0,0,0,0.65)]"
         >
-          Un juego de {config.preguntas.length} situaciones para descubrir cómo
+          Un juego de {TOTAL_PREGUNTAS} situaciones para descubrir cómo
           convivimos con los mapaches del resort.{" "}
           <strong className="font-bold text-crema">
             Aquí nadie pierde: aquí se descubre.
@@ -267,7 +267,7 @@ function Hero() {
             </a>
           </div>
           <p className="mt-7 font-mono text-xs tracking-wider text-crema/40 uppercase">
-            {config.preguntas.length} paradas · cinco minutos · sin respuestas malas
+            {TOTAL_PREGUNTAS} paradas · cinco minutos · sin respuestas malas
           </p>
         </motion.div>
       </div>
@@ -382,15 +382,15 @@ function Paradas() {
           {...enVista}
           className="titular text-4xl text-crema sm:text-5xl"
         >
-          Cinco paradas.
+          Tres perfiles.
           <br />
-          Un solo sendero.
+          Un sendero para cada uno.
         </motion.h2>
 
         <div className="mt-14">
-          {config.categorias.map((cat, i) => (
+          {ROLES.map((rol, i) => (
             <motion.div
-              key={cat.id}
+              key={rol}
               {...enVista}
               transition={{ delay: i * 0.06, duration: 0.6 }}
               className="group flex items-center gap-6 py-5 sm:gap-10"
@@ -398,19 +398,20 @@ function Paradas() {
               <span className="numeral-hueco text-5xl font-black tabular-nums sm:text-6xl">
                 <Contador hasta={i + 1} />
               </span>
-              <h3 className="flex-1 text-xl font-black tracking-tight text-crema sm:text-2xl">
-                {cat.nombre}
+              <h3 className="flex-1 text-xl leading-snug font-black tracking-tight text-crema sm:text-2xl">
+                {cuestionarioDe(rol).nombre}
               </h3>
               <span className="font-mono text-xs whitespace-nowrap text-crema/35">
-                <Contador hasta={cat.preguntas.length} digitos={1} /> situaciones
+                <Contador hasta={TOTAL_PREGUNTAS} digitos={1} /> situaciones
               </span>
             </motion.div>
           ))}
         </div>
 
         <motion.p {...enVista} className="mt-10 max-w-xl leading-relaxed text-crema/55">
-          Desde el que se acerca demasiado por la foto hasta el que encuentra una
-          cría sola al pie de un árbol. Todo esto pasa aquí.
+          Cada perfil responde lo suyo: el equipo sobre los protocolos de su
+          turno, los huéspedes sobre su estadía y la comunidad sobre el día a
+          día del barrio.
         </motion.p>
       </div>
     </section>

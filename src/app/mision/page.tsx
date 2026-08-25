@@ -5,9 +5,8 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
 import { MapaSendero } from "@/components/MapaSendero";
 import { PanelPregunta } from "@/components/PanelPregunta";
-import { FondoVideo } from "@/components/FondoVideo";
 import { sesion, useSesion } from "@/lib/sesion";
-import { PREGUNTAS, type Letra } from "@/lib/mision";
+import { cuestionarioDe, preguntasDe, type Letra } from "@/lib/mision";
 
 export default function MisionPage() {
   const router = useRouter();
@@ -27,10 +26,14 @@ export default function MisionPage() {
 
   if (!participante) return null;
 
+  // Cada perfil responde su propio cuestionario.
+  const preguntas = preguntasDe(participante.rol);
+  const cuestionario = cuestionarioDe(participante.rol);
+
   const respondidas = Object.keys(respuestas).length;
-  const frontera = Math.min(respondidas, PREGUNTAS.length - 1);
+  const frontera = Math.min(respondidas, preguntas.length - 1);
   const indice = indiceManual ?? frontera;
-  const pregunta = PREGUNTAS[indice];
+  const pregunta = preguntas[indice];
   const previa = respuestas[pregunta.numero];
 
   function irA(nuevo: number) {
@@ -44,7 +47,7 @@ export default function MisionPage() {
     sesion.guardarRespuestas(actualizadas);
     setAbierta(false);
 
-    const completo = Object.keys(actualizadas).length === PREGUNTAS.length;
+    const completo = Object.keys(actualizadas).length === preguntas.length;
     const revisaba = Boolean(previa);
 
     window.setTimeout(
@@ -57,40 +60,32 @@ export default function MisionPage() {
         setIndiceManual(revisaba ? Math.min(indice + 1, frontera) : null);
         setAbierta(true);
       },
-      completo && !revisaba ? 700 : 1100,
+      completo && !revisaba ? 700 : 1000,
     );
   }
 
   return (
-    <main className="relative min-h-dvh bg-selva-950">
-      {/* Velo apenas perceptible: asienta el metraje con la paleta y da un
-          piso de contraste al texto, sin apagar la imagen. */}
-      <FondoVideo
-        webm="/hero/sendero.webm"
-        mp4="/hero/sendero.mp4"
-        poster="/hero/sendero-poster.jpg"
-        velo="bg-selva-950/30"
-      />
-
+    <main className="escenario-vivo relative min-h-dvh overflow-hidden bg-crema">
       <div className="relative z-10">
-        <header className="sticky top-0 z-30 bg-selva-950/85 px-5 py-4 backdrop-blur-md">
+        <header className="sticky top-0 z-30 bg-crema/80 px-5 py-4 backdrop-blur-md">
           <div className="mx-auto flex max-w-md items-center justify-between gap-4">
             <div className="min-w-0">
-              <p className="truncate font-black tracking-tight text-crema">
+              <p className="truncate font-black tracking-tight text-selva-900">
                 {participante.nombre.split(" ")[0]}, tu sendero
               </p>
-              <p className="font-mono text-[11px] text-crema/45">
-                {respondidas} de {PREGUNTAS.length} paradas
+              <p className="font-mono text-[11px] text-selva-700/50">
+                {respondidas} de {preguntas.length} paradas · {cuestionario.nombre}
               </p>
             </div>
-            <span className="shrink-0 rounded-full bg-oro-500/15 px-3 py-1 font-mono text-[11px] tracking-wide text-oro-300">
+            <span className="shrink-0 rounded-full bg-selva-700 px-3 py-1 font-mono text-[11px] tracking-wide text-oro-300">
               {participante.rol}
             </span>
           </div>
         </header>
 
-        <div className="pt-6">
+        <div className="pt-4">
           <MapaSendero
+            preguntas={preguntas}
             indiceActual={indice}
             frontera={frontera}
             onAbrirEstacion={irA}
@@ -104,7 +99,7 @@ export default function MisionPage() {
             key={pregunta.numero}
             pregunta={pregunta}
             posicion={indice + 1}
-            total={PREGUNTAS.length}
+            total={preguntas.length}
             respuestaPrevia={previa}
             puedeAnterior={indice > 0}
             puedeSiguiente={indice < frontera}

@@ -1,12 +1,14 @@
 import config from "@/config/preguntas.json";
 
 export type Letra = "A" | "B" | "C" | "D";
+
 /**
  * Perfiles con los que se puede jugar. El orden es el que ve el participante.
  *
- * Se declara aquí y no en la pantalla de registro para que el día que el
- * cliente pida otro perfil solo haya que tocar un sitio. El tipo sale de la
- * propia lista, así no pueden quedar desalineados.
+ * Cada perfil tiene su propio cuestionario: un empleado responde sobre
+ * protocolos de su turno y un huésped sobre su estadía, así que las preguntas
+ * no se comparten. Las claves de `cuestionarios` en preguntas.json son
+ * exactamente estos nombres.
  */
 export const ROLES = ["Colaborador/a", "Huésped", "Comunidad"] as const;
 
@@ -14,18 +16,17 @@ export type Rol = (typeof ROLES)[number];
 
 export interface Pregunta {
   numero: number;
-  categoria: string;
-  titulo: string;
+  /** Titular del tema, que es lo que se muestra como desglose al final. */
+  tema: string;
   escenario: string;
   opciones: Record<Letra, string>;
   correcta: Letra;
 }
 
-export interface Categoria {
-  id: string;
+export interface Cuestionario {
+  /** Nombre del conjunto tal como lo llama el cliente. */
   nombre: string;
-  icono: string;
-  preguntas: number[];
+  preguntas: Pregunta[];
 }
 
 export interface Nivel {
@@ -45,27 +46,29 @@ export interface Participante {
   autoriza: true;
 }
 
-/** Respuestas indexadas por número de pregunta (1-15). */
+/** Respuestas indexadas por número de pregunta dentro del cuestionario. */
 export type Respuestas = Record<number, Letra>;
 
-export const PREGUNTAS = config.preguntas as Pregunta[];
-export const CATEGORIAS = config.categorias as Categoria[];
+const CUESTIONARIOS = config.cuestionarios as Record<string, Cuestionario>;
+
 export const NIVELES = config.niveles as Nivel[];
 export const MAXIMO = config.puntuacion.maximo;
-
+export const PUNTOS_POR_ACIERTO = config.puntuacion.puntosPorAcierto;
 export const LETRAS: Letra[] = ["A", "B", "C", "D"];
 
-export function preguntaPorNumero(numero: number): Pregunta | undefined {
-  return PREGUNTAS.find((p) => p.numero === numero);
+/** Cuestionario que le toca a un perfil. */
+export function cuestionarioDe(rol: Rol): Cuestionario {
+  return CUESTIONARIOS[rol] ?? CUESTIONARIOS[ROLES[0]];
 }
 
-export function categoriaDe(pregunta: Pregunta): Categoria | undefined {
-  return CATEGORIAS.find((c) => c.id === pregunta.categoria);
+export function preguntasDe(rol: Rol): Pregunta[] {
+  return cuestionarioDe(rol).preguntas;
 }
 
-export function puntajeDe(respuestas: Respuestas): number {
-  return PREGUNTAS.reduce(
-    (total, p) => total + (respuestas[p.numero] === p.correcta ? 1 : 0),
+export function puntajeDe(rol: Rol, respuestas: Respuestas): number {
+  return preguntasDe(rol).reduce(
+    (total, p) =>
+      total + (respuestas[p.numero] === p.correcta ? PUNTOS_POR_ACIERTO : 0),
     0,
   );
 }
@@ -78,22 +81,20 @@ export function nivelPara(puntaje: number): Nivel {
   );
 }
 
-export interface DesgloseCategoria {
-  categoria: Categoria;
-  aciertos: number;
-  total: number;
+export interface DesgloseTema {
+  pregunta: Pregunta;
+  elegida?: Letra;
+  acerto: boolean;
 }
 
-export function desglosePorCategoria(respuestas: Respuestas): DesgloseCategoria[] {
-  return CATEGORIAS.map((categoria) => {
-    const preguntas = categoria.preguntas
-      .map(preguntaPorNumero)
-      .filter((p): p is Pregunta => Boolean(p));
-
-    return {
-      categoria,
-      aciertos: preguntas.filter((p) => respuestas[p.numero] === p.correcta).length,
-      total: preguntas.length,
-    };
-  });
+/** Resultado tema por tema, que es el desglose que ve el participante. */
+export function desglosePorTema(rol: Rol, respuestas: Respuestas): DesgloseTema[] {
+  return preguntasDe(rol).map((pregunta) => ({
+    pregunta,
+    elegida: respuestas[pregunta.numero],
+    acerto: respuestas[pregunta.numero] === pregunta.correcta,
+  }));
 }
+
+/** Cuántas preguntas tiene un recorrido. Igual en los tres perfiles, hoy. */
+export const TOTAL_PREGUNTAS = preguntasDe(ROLES[0]).length;
