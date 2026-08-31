@@ -16,6 +16,9 @@
 /** Nombre de la pestaña donde se acumulan los resultados. */
 const HOJA = "Resultados";
 
+/** Pestaña de consulta con los tres cuestionarios completos. */
+const HOJA_REF = "Cuestionarios";
+
 /**
  * Devuelve el libro donde escribir.
  *
@@ -66,11 +69,16 @@ function doPost(e) {
     }
     delete datos.token; // no se guarda en la hoja
 
+    // La referencia no es parte de la fila: es la chuleta de la otra pestaña.
+    const referencia = datos.referencia;
+    delete datos.referencia;
+
     // Dos envíos a la vez podrían escribir sobre la misma fila.
     const cerrojo = LockService.getScriptLock();
     cerrojo.waitLock(20000);
     try {
       escribirFila(datos);
+      if (referencia && referencia.length) actualizarReferencia(referencia);
     } finally {
       cerrojo.releaseLock();
     }
@@ -141,6 +149,47 @@ function escribirFila(datos) {
   });
 
   hoja.appendRow(fila);
+}
+
+/**
+ * Reconstruye la pestaña de consulta con los tres cuestionarios.
+ *
+ * Solo hace trabajo si el contenido cambió: se guarda una huella del envío
+ * anterior y se compara. Sin ese cortafuegos, cada participante que termina el
+ * recorrido reescribiría quince filas para dejarlas idénticas, y con varias
+ * personas respondiendo a la vez el script se quedaría sin cuota.
+ */
+function actualizarReferencia(filas) {
+  const props = PropertiesService.getScriptProperties();
+  const huella = String(JSON.stringify(filas).length) + ":" + filas.length;
+  if (props.getProperty("HUELLA_REF") === huella) return;
+
+  const doc = libro();
+  let hoja = doc.getSheetByName(HOJA_REF);
+  if (!hoja) hoja = doc.insertSheet(HOJA_REF);
+  hoja.clear();
+
+  const encabezado = [
+    "Cuestionario", "Perfil", "N°", "Tema", "Situación",
+    "Opción A", "Opción B", "Opción C", "Opción D", "Correcta",
+  ];
+  const cuerpo = filas.map(function (f) {
+    return [f.cuestionario, f.perfil, f.numero, f.tema, f.escenario,
+            f.A, f.B, f.C, f.D, f.correcta];
+  });
+
+  hoja.getRange(1, 1, 1, encabezado.length)
+    .setValues([encabezado])
+    .setFontWeight("bold")
+    .setBackground("#313d1a")
+    .setFontColor("#faf7ee");
+  hoja.getRange(2, 1, cuerpo.length, encabezado.length).setValues(cuerpo);
+  hoja.setFrozenRows(1);
+  hoja.setColumnWidth(5, 420); // la situación es el texto largo
+  for (var c = 6; c <= 9; c++) hoja.setColumnWidth(c, 300);
+  hoja.getRange(2, 5, cuerpo.length, 5).setWrap(true);
+
+  props.setProperty("HUELLA_REF", huella);
 }
 
 /**

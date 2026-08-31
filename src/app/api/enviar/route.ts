@@ -5,6 +5,7 @@ import {
   MAXIMO,
   nivelPara,
   puntajeDe,
+  referenciaCuestionarios,
   type Participante,
   type Respuestas,
 } from "@/lib/mision";
@@ -90,7 +91,16 @@ export async function POST(request: Request) {
         pueda escribir, así que la clave compartida es lo único que impide que
         alguien con la URL inserte filas falsas en el Sheet del cliente.
       */
-      body: JSON.stringify(token ? { ...fila, token } : fila),
+      /*
+        `referencia` viaja con cada envío para que el Apps Script mantenga al
+        día la pestaña de consulta. Son unos pocos KB y evita el paso manual de
+        volver a subirla cada vez que el cliente edita una pregunta.
+      */
+      body: JSON.stringify({
+        ...fila,
+        ...(token ? { token } : {}),
+        referencia: referenciaCuestionarios(),
+      }),
     });
 
     if (!respuesta.ok) {

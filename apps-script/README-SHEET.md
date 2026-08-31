@@ -118,6 +118,20 @@ Las columnas se crean solas a partir del primer envío. Si el cliente cambia el
 número de preguntas, las nuevas se agregan al final sin descuadrar las filas ya
 guardadas.
 
+### Pestaña `Cuestionarios`
+
+Junto a los resultados aparece una segunda pestaña de consulta con los tres
+cuestionarios completos: perfil, número, tema, la situación, las cuatro opciones
+y cuál es la correcta.
+
+La hoja de resultados guarda la **letra** elegida, no el texto. Esta pestaña es
+lo que permite leer un `P3 respuesta = D` sin tener el cuestionario a mano.
+
+Se reconstruye sola cuando el contenido cambia, así que **el día que se edite una
+pregunta en `preguntas.json`, la consulta queda al día en el siguiente envío**.
+Mientras nada cambie, el script no la toca: reescribirla en cada participante
+gastaría cuota sin motivo.
+
 ## Si algo no llega
 
 - **Abre la URL `/exec` en el navegador.** Si no responde el JSON de arriba, la

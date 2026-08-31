@@ -98,3 +98,43 @@ export function desglosePorTema(rol: Rol, respuestas: Respuestas): DesgloseTema[
 
 /** Cuántas preguntas tiene un recorrido. Igual en los tres perfiles, hoy. */
 export const TOTAL_PREGUNTAS = preguntasDe(ROLES[0]).length;
+
+/**
+ * Los tres cuestionarios en una tabla plana, para la pestaña de referencia del
+ * Sheet.
+ *
+ * Se manda con cada envío y el Apps Script reconstruye esa pestaña solo cuando
+ * el contenido cambia. Así el día que el cliente edite una pregunta en el JSON,
+ * la chuleta que ve quien analiza los datos se actualiza sola: sin esto la
+ * referencia envejecería y sería peor que no tenerla.
+ */
+export interface FilaReferencia {
+  cuestionario: string;
+  perfil: string;
+  numero: number;
+  tema: string;
+  escenario: string;
+  A: string;
+  B: string;
+  C: string;
+  D: string;
+  correcta: Letra;
+}
+
+export function referenciaCuestionarios(): FilaReferencia[] {
+  return ROLES.flatMap((rol) => {
+    const c = cuestionarioDe(rol);
+    return c.preguntas.map((p) => ({
+      cuestionario: c.nombre,
+      perfil: rol,
+      numero: p.numero,
+      tema: p.tema,
+      escenario: p.escenario,
+      A: p.opciones.A,
+      B: p.opciones.B,
+      C: p.opciones.C,
+      D: p.opciones.D,
+      correcta: p.correcta,
+    }));
+  });
+}
