@@ -53,12 +53,22 @@ export async function POST(request: Request) {
   };
 
   /*
-    Una columna por pregunta con la letra elegida y otra con el acierto. Los
-    tres perfiles responden cuestionarios distintos, así que el encabezado lleva
-    el tema: sin él, "P1" significaría cosas diferentes según quién respondió.
+    Tres columnas fijas por pregunta: tema, letra elegida y acierto.
+
+    Antes el encabezado de la respuesta llevaba el tema incrustado
+    ("P1 · Alimentación de mapaches"), y como cada perfil responde un
+    cuestionario distinto, cada uno estrenaba sus propias columnas: la hoja
+    crecía a quince columnas de respuesta de las que cada fila llenaba cinco.
+    Peor aún, la columna de acierto sí era compartida, así que "P1 acierto"
+    significaba cosas distintas según quién respondió.
+
+    Con el tema en su propia columna, las tres son iguales para todos los
+    perfiles, cada fila las llena todas y la hoja queda lista para filtrar y
+    tabular sin trucos.
   */
   desglose.forEach(({ pregunta, elegida, acerto }) => {
-    fila[`P${pregunta.numero} · ${pregunta.tema}`] = elegida ?? "";
+    fila[`P${pregunta.numero} tema`] = pregunta.tema;
+    fila[`P${pregunta.numero} respuesta`] = elegida ?? "";
     fila[`P${pregunta.numero} acierto`] = acerto ? "Sí" : "No";
   });
 

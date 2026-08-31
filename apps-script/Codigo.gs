@@ -136,10 +136,24 @@ function escribirFila(datos) {
 
   // Se escribe en el orden de los encabezados, no en el del envío.
   const fila = encabezados.map(function (col) {
-    return Object.prototype.hasOwnProperty.call(datos, col) ? datos[col] : "";
+    var v = Object.prototype.hasOwnProperty.call(datos, col) ? datos[col] : "";
+    return comoTexto(v);
   });
 
   hoja.appendRow(fila);
+}
+
+/**
+ * Evita que Sheets interprete un valor como fórmula.
+ *
+ * Un número de contacto llega como "+57 3001234567" y la hoja lee el signo más
+ * de la primera posición como el inicio de una expresión: la celda quedaba en
+ * #ERROR! y el teléfono se perdía. El apóstrofo inicial fuerza texto y no se
+ * muestra en la celda.
+ */
+function comoTexto(v) {
+  if (typeof v !== "string" || !v.length) return v;
+  return /^[=+\-@]/.test(v) ? "'" + v : v;
 }
 
 function respuesta(objeto) {
