@@ -526,16 +526,31 @@ body {
 */
 @media (prefers-reduced-motion: no-preference) {
   .mapa-deriva {
-    animation: derivar-mapa 88s ease-in-out infinite alternate;
+    animation: derivar-mapa 120s linear infinite;
   }
 }
 
+/*
+  Recorrido cerrado en vez de ida y vuelta. Un `alternate` invierte la dirección
+  en cada extremo y eso se percibe como un péndulo; un circuito que vuelve al
+  punto de partida con paso constante se siente como flotar y nunca se nota
+  dónde empieza el ciclo.
+*/
 @keyframes derivar-mapa {
-  from {
-    transform: scale(1.08) translate3d(-1.5%, -1%, 0);
+  0% {
+    transform: scale(1.12) translate3d(-1.6%, -0.9%, 0);
   }
-  to {
-    transform: scale(1.16) translate3d(1.5%, 1.5%, 0);
+  25% {
+    transform: scale(1.15) translate3d(0.4%, -1.7%, 0);
+  }
+  50% {
+    transform: scale(1.12) translate3d(1.7%, 0.8%, 0);
+  }
+  75% {
+    transform: scale(1.15) translate3d(-0.3%, 1.6%, 0);
+  }
+  100% {
+    transform: scale(1.12) translate3d(-1.6%, -0.9%, 0);
   }
 }
 

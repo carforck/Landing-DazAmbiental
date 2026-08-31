@@ -63,7 +63,7 @@ export default function RegistroPage() {
 
       <Link
         href="/"
-        className="relative z-30 w-fit cursor-pointer font-mono text-xs tracking-[0.18em] text-selva-700/50 uppercase transition-colors duration-200 hover:text-selva-900"
+        className="relative z-30 -ml-2 inline-flex w-fit cursor-pointer items-center px-2 py-3 font-mono text-xs tracking-[0.18em] text-selva-700/50 uppercase transition-colors duration-200 hover:text-selva-900"
       >
         Volver
       </Link>
@@ -109,7 +109,9 @@ export default function RegistroPage() {
                     value={pais}
                     onChange={(e) => setPais(e.target.value)}
                     aria-label="Indicativo del país"
-                    className="h-full cursor-pointer appearance-none rounded-xl border border-selva-900/15 bg-white/70 py-3.5 pr-8 pl-4 text-selva-900 transition-colors duration-200 hover:border-selva-900/30 focus:border-oro-600 focus:outline-none"
+                    /* Ancho fijo: un select nativo se estira hasta su opción más larga
+                       ("República Dominicana") y empujaba la fila fuera de pantalla */
+                    className="h-full w-[6.5rem] cursor-pointer appearance-none truncate rounded-xl border border-selva-900/15 bg-white/70 py-3.5 pr-7 pl-3 text-selva-900 transition-colors duration-200 hover:border-selva-900/30 focus:border-oro-600 focus:outline-none"
                   >
                     {PAISES.map((p) => (
                       <option key={p.iso} value={p.iso}>
@@ -119,7 +121,7 @@ export default function RegistroPage() {
                   </select>
                   <span
                     aria-hidden
-                    className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-selva-700/40"
+                    className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-selva-700/40"
                   >
                     ▾
                   </span>
@@ -168,7 +170,7 @@ export default function RegistroPage() {
                 type="checkbox"
                 checked={autoriza}
                 onChange={(e) => setAutoriza(e.target.checked)}
-                className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer accent-oro-600"
+                className="mt-0.5 h-6 w-6 shrink-0 cursor-pointer accent-oro-600"
               />
               <span className="text-sm leading-relaxed text-selva-700/85">
                 Autorizo a <strong className="text-selva-900">DAZ Ambiental</strong>{" "}
@@ -177,7 +179,7 @@ export default function RegistroPage() {
                 1581 de 2012.{" "}
                 <Link
                   href="/#datos"
-                  className="text-oro-600 underline underline-offset-2"
+                  className="inline-block py-1.5 text-oro-600 underline underline-offset-2"
                 >
                   Ver detalle
                 </Link>

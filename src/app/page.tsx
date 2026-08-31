@@ -261,7 +261,7 @@ function Hero() {
             </Link>
             <a
               href="#datos"
-              className="cursor-pointer text-base font-bold text-crema/85 transition-colors duration-200 hover:text-oro-300"
+              className="inline-flex cursor-pointer items-center px-1 py-3 text-base font-bold text-crema/85 transition-colors duration-200 hover:text-oro-300"
             >
               Cómo tratamos tus datos
             </a>
@@ -473,7 +473,7 @@ function Cierre() {
       className="relative overflow-hidden bg-selva-950 px-6 pt-20 pb-10 sm:px-10"
     >
       <Image
-        src="/hero/resort.jpg"
+        src="/hero/mapaches-footer.webp"
         alt=""
         fill
         sizes="100vw"
@@ -510,13 +510,13 @@ function Cierre() {
             </p>
             <a
               href="mailto:daz.ambiente@gmail.com"
-              className="mt-4 block cursor-pointer text-lg font-bold text-crema transition-colors duration-200 hover:text-oro-300"
+              className="mt-3 block cursor-pointer py-2 text-lg font-bold text-crema transition-colors duration-200 hover:text-oro-300"
             >
               daz.ambiente@gmail.com
             </a>
             <a
               href="tel:+573002295181"
-              className="mt-1 block cursor-pointer text-lg font-bold text-crema transition-colors duration-200 hover:text-oro-300"
+              className="block cursor-pointer py-2 text-lg font-bold text-crema transition-colors duration-200 hover:text-oro-300"
             >
               +57 300 2295181
             </a>
@@ -554,7 +554,7 @@ function Cierre() {
                 href="https://vanttagetech.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="cursor-pointer text-crema/45 underline underline-offset-2 transition-colors duration-200 hover:text-oro-300"
+                className="inline-block cursor-pointer py-2 text-crema/45 underline underline-offset-2 transition-colors duration-200 hover:text-oro-300"
               >
                 vanttagetech.com
               </a>

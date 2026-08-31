@@ -74,7 +74,7 @@ export function MapaSendero({
   const posicionMapache = puntos[Math.min(indiceActual, puntos.length - 1)];
 
   return (
-    <div ref={contenedor} className="relative mx-auto w-full max-w-md px-4 pt-10 pb-28">
+    <div ref={contenedor} className="relative mx-auto w-full max-w-md px-4 pt-16 pb-28">
       {/* Sendero, detrás de las estaciones */}
       <svg
         aria-hidden
@@ -113,11 +113,17 @@ export function MapaSendero({
             i === indiceActual ? "actual" : i <= frontera ? "completada" : "bloqueada";
 
           return (
-            <div
-              key={pregunta.numero}
-              className="flex flex-col items-center py-5"
-              style={{ transform: `translateX(${desvio(i)}px)` }}
-            >
+            <div key={pregunta.numero} className="flex flex-col items-center py-5">
+              {/*
+                El desplazamiento va en este envoltorio, que mide lo que mide su
+                contenido. Aplicarlo a la fila (que ocupa todo el ancho) la
+                empujaba entera fuera de la pantalla: eran 45 px de scroll
+                horizontal en un celular de 375.
+              */}
+              <div
+                className="flex flex-col items-center"
+                style={{ transform: `translateX(${desvio(i)}px)` }}
+              >
               <div ref={(el) => void (estaciones.current[i] = el)}>
                 <Estacion
                   numero={pregunta.numero}
@@ -126,12 +132,13 @@ export function MapaSendero({
                 />
               </div>
               <span
-                className={`mt-3 max-w-[10rem] text-center font-mono text-[10px] leading-tight tracking-wide uppercase transition-colors duration-200 ${
-                  estado === "bloqueada" ? "text-crema/30" : "text-crema/80"
+                className={`relative z-20 mt-3 max-w-[11rem] rounded-full bg-selva-950/75 px-3 py-1.5 text-center font-mono text-[10px] leading-tight tracking-wide uppercase backdrop-blur-sm transition-colors duration-200 ${
+                  estado === "bloqueada" ? "text-crema/45" : "text-crema"
                 }`}
               >
                 {pregunta.tema}
               </span>
+              </div>
             </div>
           );
         })}
@@ -157,9 +164,13 @@ export function MapaSendero({
   );
 }
 
-/** Serpenteo horizontal: suave, acotado y estable entre renders. */
+/**
+ * Serpenteo horizontal. La amplitud está acotada a 56 px porque la estación
+ * mide 74 y la etiqueta hasta 176: con más desvío, en un celular de 375 el
+ * conjunto se sale del contenedor.
+ */
 function desvio(i: number) {
-  return Math.round(Math.sin(i * 1.1) * 68);
+  return Math.round(Math.sin(i * 1.1) * 56);
 }
 
 /** Curva suave que une los centros medidos de las estaciones. */

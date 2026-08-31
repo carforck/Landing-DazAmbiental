@@ -66,13 +66,13 @@ export default function MisionPage() {
   }
 
   return (
-    <main className="relative min-h-dvh overflow-hidden bg-selva-950">
+    <main className="relative min-h-dvh bg-selva-950">
       {/*
         Mapa ilustrado de fondo, fijo: el sendero se desplaza sobre él. Va en
         webp (206 KB frente a los 2.9 MB del jpeg original) y con dos tamaños,
         para no mandarle al celular una imagen de 1920 px.
       */}
-      <div aria-hidden className="fixed inset-0">
+      <div aria-hidden className="fixed inset-0 overflow-hidden">
         <Image
           src="/hero/mapa-juego.webp"
           alt=""
@@ -80,18 +80,18 @@ export default function MisionPage() {
           priority
           sizes="(max-width: 900px) 900px, 1920px"
           /* Desenfoque y desaturación: el mapa ambienta, no compite */
-          className="mapa-deriva object-cover blur-[3px] saturate-[0.75]"
+          className="mapa-deriva object-cover blur-[1.5px] saturate-[0.9]"
         />
         {/*
           Velo doble: uno parejo que baja el brillo general y un degradado que
           carga los extremos, donde van la cabecera y el final del recorrido.
           Sin esto el mapa es tan luminoso que las estaciones se pierden.
         */}
-        <div className="absolute inset-0 bg-selva-950/72" />
-        <div className="absolute inset-0 bg-gradient-to-b from-selva-950/92 via-selva-950/45 to-selva-950/92" />
+        <div className="absolute inset-0 bg-selva-950/48" />
+        <div className="absolute inset-0 bg-gradient-to-b from-selva-950/88 via-selva-950/20 to-selva-950/88" />
         {/* Viñeta: cierra los bordes y empuja la mirada al centro, que es por
             donde baja la ruta */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(21,27,13,0.72)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(21,27,13,0.55)_100%)]" />
       </div>
       <div className="relative z-10">
         <header className="sticky top-0 z-30 bg-selva-950/70 px-5 py-4 backdrop-blur-md">
