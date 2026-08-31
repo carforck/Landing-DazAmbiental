@@ -101,9 +101,18 @@ despliegue nuevo.
 El script crea una pestaña llamada **Resultados** con la fila de encabezados
 congelada. Una fila por participante:
 
-Fecha y hora · Nombre completo · Documento de identidad · Perfil · Puntaje ·
-Máximo · Nivel · Autorización habeas data · una columna por cada categoría con
-los aciertos · y una columna por pregunta (P1 a P15) con la letra elegida.
+**25 columnas** en tres bloques:
+
+| Bloque | Columnas |
+|---|---|
+| Identificación | Fecha y hora · Nombre completo · Número de contacto · Perfil · Cuestionario |
+| Resultado | Puntaje · Máximo · Nivel · Interpretación · Autorización habeas data |
+| Por pregunta | `P1 tema` · `P1 respuesta` · `P1 acierto`, y así hasta `P5` |
+
+Las columnas por pregunta son **las mismas para los tres perfiles**. Cada uno
+responde un cuestionario distinto, así que el tema viaja en su propia columna en
+vez de ir incrustado en el encabezado: de lo contrario cada perfil estrenaría
+sus propias columnas y la hoja quedaría llena de huecos.
 
 Las columnas se crean solas a partir del primer envío. Si el cliente cambia el
 número de preguntas, las nuevas se agregan al final sin descuadrar las filas ya
